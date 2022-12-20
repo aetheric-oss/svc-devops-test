@@ -81,65 +81,67 @@ jobs:
           cargo install cargo-edit
           cargo set-version ${{ steps.tag_version.outputs.new_version }}
           make toml-tidy
-
-      - name: Commit and push CHANGELOG.md
-        if: ${{ env.GITHUB_REF_NAME == 'main' }}
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          CHANGED_FILE: "CHANGELOG.md"
-          MESSAGE: "ci - update changelog\n\n[skip ci]"
-        run: |
-          export CONTENT=$(base64 -i ${{ env.CHANGED_FILE }})
-          export SHA=$(git rev-parse ${{ github.ref_name }}:${{ env.CHANGED_FILE }})
-          gh api --method PUT /repos/:owner/:repo/contents/${{ env.CHANGED_FILE }} \
-            --field message="${{ env.MESSAGE }}" \
-            --field content="$CONTENT" \
-            --field encoding="base64" \
-            --field branch="${{ github.ref_name }}" \
-            --field sha="$SHA"
-
-      - name: Commit and push server Cargo.toml
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          CHANGED_FILE: "server/Cargo.toml"
-          MESSAGE: "ci - update server package version\n\n[skip ci]"
-        run: |
-          export CONTENT=$(base64 -i ${{ env.CHANGED_FILE }})
-          export SHA=$(git rev-parse ${{ github.ref_name }}:${{ env.CHANGED_FILE }})
-          gh api --method PUT /repos/:owner/:repo/contents/${{ env.CHANGED_FILE }} \
-            --field message="${{ env.MESSAGE }}" \
-            --field content="$CONTENT" \
-            --field encoding="base64" \
-            --field branch="${{ github.ref_name }}" \
-            --field sha="$SHA"
-
-      - name: Commit and push client-grpc Cargo.toml
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          CHANGED_FILE: "client-grpc/Cargo.toml"
-          MESSAGE: "ci - update client-grpc package version\n\n[skip ci]"
-        run: |
-          export CONTENT=$(base64 -i ${{ env.CHANGED_FILE }})
-          export SHA=$(git rev-parse ${{ github.ref_name }}:${{ env.CHANGED_FILE }})
-          gh api --method PUT /repos/:owner/:repo/contents/${{ env.CHANGED_FILE }} \
-            --field message="${{ env.MESSAGE }}" \
-            --field content="$CONTENT" \
-            --field encoding="base64" \
-            --field branch="${{ github.ref_name }}" \
-            --field sha="$SHA"
+#
+#      - name: Commit and push CHANGELOG.md
+#        if: ${{ env.GITHUB_REF_NAME == 'main' }}
+#        env:
+#          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+#          CHANGED_FILE: "CHANGELOG.md"
+#          MESSAGE: "ci - update changelog\n\n[skip ci]"
+#        run: |
+#          export CONTENT=$(base64 -i ${{ env.CHANGED_FILE }})
+#          export SHA=$(git rev-parse ${{ github.ref_name }}:${{ env.CHANGED_FILE }})
+#          gh api --method PUT /repos/:owner/:repo/contents/${{ env.CHANGED_FILE }} \
+#            --field message="${{ env.MESSAGE }}" \
+#            --field content="$CONTENT" \
+#            --field encoding="base64" \
+#            --field branch="${{ github.ref_name }}" \
+#            --field sha="$SHA"
+#
+#      - name: Commit and push server Cargo.toml
+#        env:
+#          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+#          CHANGED_FILE: "server/Cargo.toml"
+#          MESSAGE: "ci - update server package version\n\n[skip ci]"
+#        run: |
+#          export CONTENT=$(base64 -i ${{ env.CHANGED_FILE }})
+#          export SHA=$(git rev-parse ${{ github.ref_name }}:${{ env.CHANGED_FILE }})
+#          gh api --method PUT /repos/:owner/:repo/contents/${{ env.CHANGED_FILE }} \
+#            --field message="${{ env.MESSAGE }}" \
+#            --field content="$CONTENT" \
+#            --field encoding="base64" \
+#            --field branch="${{ github.ref_name }}" \
+#            --field sha="$SHA"
+#
+#      - name: Commit and push client-grpc Cargo.toml
+#        env:
+#          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+#          CHANGED_FILE: "client-grpc/Cargo.toml"
+#          MESSAGE: "ci - update client-grpc package version\n\n[skip ci]"
+#        run: |
+#          export CONTENT=$(base64 -i ${{ env.CHANGED_FILE }})
+#          export SHA=$(git rev-parse ${{ github.ref_name }}:${{ env.CHANGED_FILE }})
+#          gh api --method PUT /repos/:owner/:repo/contents/${{ env.CHANGED_FILE }} \
+#            --field message="${{ env.MESSAGE }}" \
+#            --field content="$CONTENT" \
+#            --field encoding="base64" \
+#            --field branch="${{ github.ref_name }}" \
+#            --field sha="$SHA"
 
       - name: Generate new Cargo.lock
         run: |
           cargo update
 
-      - name: Commit and push new Cargo.lock
+      - name: Commit and push release updates
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          CHANGED_FILE: "Cargo.lock"
-          MESSAGE: "ci - update cargo.lock file\n\n[skip ci]"
+          CHANGED_FILES: "Cargo.lock client-grpc/Cargo.toml server/Cargo.toml CHANGELOG.md"
+          MESSAGE: "ci - update release files\n\n[skip ci]"
         run: |
-          git remote set-url origin https://arrow-tf-github-repositories[bot]:${GITHUB_TOKEN}@${{ github.server_url }}/${{ github.repository }}
-          git commit $CHANGED_FILE -m "$MESSAGE"
+          git remote set-url origin https://arrow-tf-github-repositories[bot]:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+          git config user.email "100382777+arrow-tf-github-repositories[bot]@users.noreply.github.com"
+          git config user.name "arrow-tf-github-repositories[bot]"
+          git commit $CHANGED_FILES -m "$MESSAGE"
           git push
 
       - name: Push New Tag
