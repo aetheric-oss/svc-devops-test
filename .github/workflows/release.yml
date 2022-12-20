@@ -31,12 +31,13 @@ jobs:
       - name: Set up environment based on branch
         if: ${{ env.GITHUB_REF_NAME != 'main' }}
         run: |
-          echo "CUSTOM_RELEASE_RULES=fix:prerelease,feat:prerelease,chore:prerelease" >> $GITHUB_ENV
-          echo "PUBLISH_DRY_RUN=1" >> $GITHUB_ENV
-      - name: Set up environment based on branch
-        if: ${{ env.GITHUB_REF_NAME == 'main' }}
-        run: |
-          echo "PUBLISH_DRY_RUN=0" >> $GITHUB_ENV
+          if [ "$GITHUB_REF_NAME" == "main" ]
+          then
+            echo "PUBLISH_DRY_RUN=0" >> $GITHUB_ENV
+          else
+            echo "CUSTOM_RELEASE_RULES=fix:prerelease,feat:prerelease,chore:prerelease" >> $GITHUB_ENV
+            echo "PUBLISH_DRY_RUN=1" >> $GITHUB_ENV
+          fi
 
       - id: generate-token
         uses: tibdex/github-app-token@v1
