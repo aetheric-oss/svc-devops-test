@@ -6,6 +6,9 @@ edition = "2021"              # Allowed values are 2015, 2018, 2021
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+vendored-openssl = ['openssl/vendored']
+
 [dependencies]
 cargo-husky  = "1"
 chrono       = { version = "0.4.22", features = ["serde"] }
