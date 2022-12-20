@@ -23,10 +23,15 @@ jobs:
       contents: write
       packages: write
       deployments: write
+      pull-requests: write
     runs-on: ubuntu-latest
     concurrency:
       group: release-${{ github.head_ref || 'main' }}
     steps:
+      - name: Set up environment based on branch
+        if: ${{ env.GITHUB_REF_NAME != 'main' }}
+        run: |
+          echo "CUSTOM_RELEASE_RULES=fix:prerelease,feat:prerelease,chore:prerelease" >> $GITHUB_ENV
       - id: generate-token
         uses: tibdex/github-app-token@v1
         with:
@@ -39,12 +44,13 @@ jobs:
           fetch-depth: 0
 
       - name: Determine new Tag
-        uses: mathieudutour/github-tag-action@v6.0
+        uses: mathieudutour/github-tag-action@v6.1
         id: tag_version
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           pre_release_branches: develop
           dry_run: true
+          custom_release_rules: "${{ env.CUSTOM_RELEASE_RULES }}"
 
       - name: Generate Changelog
         id: changelog
@@ -55,6 +61,7 @@ jobs:
           nextReleaseName: "Release ${{ steps.tag_version.outputs.new_version }}"
 
       - name: Update CHANGELOG.md
+        if: ${{ env.GITHUB_REF_NAME == 'main' }}
         run: |
           cat - CHANGELOG.md > temp <<'CHANGELOG.md-EOF'
           ${{ steps.changelog.outputs.changelog }}
@@ -69,6 +76,7 @@ jobs:
           make toml-tidy
 
       - name: Commit and push CHANGELOG.md
+        if: ${{ env.GITHUB_REF_NAME == 'main' }}
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           CHANGED_FILE: "CHANGELOG.md"
