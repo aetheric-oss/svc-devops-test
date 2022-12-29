@@ -908,8 +908,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "svc-devops-test-client-grpc"
-version = "0.0.2-develop.3"
+name = "svc-template-rust-client-grpc"
+version = "0.2.0-develop.0"
 dependencies = [
  "prost",
  "prost-types",
