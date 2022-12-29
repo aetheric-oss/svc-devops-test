@@ -1,15 +1,26 @@
 [package]
-name    = "svc-template-rust"
-version = "0.2.0-develop.0"
-edition = "2021"              # Allowed values are 2015, 2018, 2021
-# Rust Editions: https://doc.rust-lang.org/edition-guide/index.html
+description = "Arrow devops test service GRPC server"
+edition     = "2021"                                                       # Allowed values are 2015, 2018, 2021
+homepage    = "https://www.arrowair.com/docs/documentation/services/intro"
+keywords    = ["vtol", "server", "devops-test"]                            # max 5
+license     = "BUSL-1.1"
+name        = "svc-devops-test"
+repository  = "https://github.com/Arrow-air/svc-devops-test"
+version     = "0.0.1"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+categories = [
+  "aerospace::drones",
+  "aerospace::protocols",
+] # max 5 -- https://crates.io/category_slugs
+
+[features]
+vendored-openssl = ['openssl/vendored']
 
 [dependencies]
 cargo-husky  = "1"
 chrono       = { version = "0.4.22", features = ["serde"] }
 hyper        = "0.14.20"
+openssl      = "0.10"
 prost        = "0.11.0"
 prost-build  = "0.11.1"
 prost-types  = "0.11.1"
