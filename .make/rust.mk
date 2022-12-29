@@ -3,7 +3,7 @@
 # File origin: https://github.com/Arrow-air/tf-github/tree/main/src/templates/all/.make/rust.mk
 
 RUST_IMAGE_NAME     ?= ghcr.io/arrow-air/tools/arrow-rust
-RUST_IMAGE_TAG      ?= 1.0
+RUST_IMAGE_TAG      ?= 1.1
 CARGO_MANIFEST_PATH ?= Cargo.toml
 CARGO_INCREMENTAL   ?= 1
 RUSTC_BOOTSTRAP     ?= 0
@@ -96,7 +96,7 @@ rust-example-%: check-cargo-registry rust-docker-pull
 		-e SERVER_PORT_GRPC=$(DOCKER_PORT_GRPC) \
 		-e SERVER_PORT_REST=$(DOCKER_PORT_REST) \
 		-e SERVER_HOSTNAME=$(DOCKER_NAME)-example-server \
-		example --remove-orphans && docker compose down
+		example && docker compose down
 
 rust-clippy: check-cargo-registry rust-docker-pull
 	@echo "$(CYAN)Running clippy...$(SGR0)"
