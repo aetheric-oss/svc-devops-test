@@ -97,11 +97,7 @@ jobs:
           nextReleaseName: "Release ${{ steps.tag_version.outputs.new_version }}"
 
       - name: Update CHANGELOG.md
-<<<<<<< HEAD
         if: ${{ github.ref_name == 'main' }}
-=======
-        if: ${{ env.GITHUB_REF_NAME == 'main' }}
->>>>>>> 2685c2a (ci: fix workflows)
         run: |
           cat - CHANGELOG.md > temp <<'CHANGELOG.md-EOF'
           ${{ steps.changelog.outputs.changelog }}
@@ -114,25 +110,6 @@ jobs:
           cargo install cargo-edit
           cargo set-version ${{ steps.tag_version.outputs.new_version }}
           make toml-tidy
-<<<<<<< HEAD
-=======
-          cargo update
-
-      - name: Commit and push release updates
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          CHANGED_FILES: "Cargo.lock client-grpc/Cargo.toml server/Cargo.toml CHANGELOG.md"
-          MESSAGE: "ci - update release files\n\n[skip ci]"
-        run: |
-          git remote set-url origin https://arrow-tf-github-repositories[bot]:${GITHUB_TOKEN}@github.com/${{ github.repository }}
-          git config user.email "100382777+arrow-tf-github-repositories[bot]@users.noreply.github.com"
-          git config user.name "arrow-tf-github-repositories[bot]"
-          git commit $CHANGED_FILES -m "$MESSAGE"
-          git push
-
-      - name: Generate new Cargo.lock
-        run: |
->>>>>>> 2685c2a (ci: fix workflows)
           cargo update
 
       - name: Commit and push release updates
