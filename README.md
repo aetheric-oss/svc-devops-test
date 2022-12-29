@@ -7,8 +7,8 @@
 1. *Replace the repository name for each:*
 
 ![Rust
-Checks](https://github.com/arrow-air/svc-template-rust/actions/workflows/rust_ci.yml/badge.svg?branch=main)
-![Python Flake8](https://github.com/arrow-air/svc-template-rust/actions/workflows/python_ci.yml/badge.svg?branch=main)
+Checks](https://github.com/arrow-air/svc-devops-test/actions/workflows/rust_ci.yml/badge.svg?branch=main)
+![Python Flake8](https://github.com/arrow-air/svc-devops-test/actions/workflows/python_ci.yml/badge.svg?branch=main)
 ![Arrow DAO
 Discord](https://img.shields.io/discord/853833144037277726?style=plastic)
 
@@ -30,7 +30,7 @@ Install Rust with [Rustup](https://www.rust-lang.org/tools/install).
 
 ```bash
 # Adds custom pre-commit hooks to .git through cargo-husky dependency
-# !! Required for developers !!
+# !! Required for devopsers !!
 cargo test
 ```
 
