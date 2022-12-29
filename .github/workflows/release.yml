@@ -59,6 +59,16 @@ jobs:
           dry_run: true
           custom_release_rules: "${{ env.CUSTOM_RELEASE_RULES }}"
 
+      - name: Squash and push automation commits
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          git remote set-url origin https://arrow-tf-github-repositories[bot]:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+          git config user.email "100382777+arrow-tf-github-repositories[bot]@users.noreply.github.com"
+          git config user.name "arrow-tf-github-repositories[bot]"
+          git filter-branch --commit-filter '[ "$GIT_AUTHOR_EMAIL" = "100382777+arrow-tf-github-repositories[bot]@users.noreply.github.com" ] && skip_commit "$@" || git commit-tree "$@"'
+          git push -f
+
       - name: Generate Changelog
         id: changelog
         uses: mrchief/universal-changelog-action@v1.3.2
@@ -82,16 +92,6 @@ jobs:
           cargo set-version ${{ steps.tag_version.outputs.new_version }}
           make toml-tidy
           cargo update
-
-      - name: Squash and push automation commits
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-        run: |
-          git remote set-url origin https://arrow-tf-github-repositories[bot]:${GITHUB_TOKEN}@github.com/${{ github.repository }}
-          git config user.email "100382777+arrow-tf-github-repositories[bot]@users.noreply.github.com"
-          git config user.name "arrow-tf-github-repositories[bot]"
-          git filter-branch --commit-filter '[ "$GIT_AUTHOR_EMAIL" = "100382777+arrow-tf-github-repositories[bot]@users.noreply.github.com" ] && skip_commit "$@" || git commit-tree "$@"'
-          git push -f
 
       - name: Commit and push release updates
         env:
