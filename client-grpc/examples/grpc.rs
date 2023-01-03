@@ -2,8 +2,8 @@
 
 use std::env;
 #[allow(unused_qualifications, missing_docs)]
-use svc_template_rust_client_grpc::client::{
-    template_rust_rpc_client::TemplateRustRpcClient, QueryIsReady,
+use svc_devops_test_client_grpc::client::{
+    devops_test_rpc_client::DevopsTestRpcClient, QueryIsReady,
 };
 
 /// Provide endpoint url to use
@@ -32,7 +32,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         grpc_endpoint
     );
 
-    let mut client = TemplateRustRpcClient::connect(grpc_endpoint).await?;
+    let mut client = DevopsTestRpcClient::connect(grpc_endpoint).await?;
 
     println!("Client created");
 
