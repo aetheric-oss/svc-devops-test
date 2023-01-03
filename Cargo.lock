@@ -794,8 +794,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "svc-template-rust"
-version = "0.2.0-develop.0"
+name = "svc-devops-test"
+version = "0.0.2-develop.2"
 dependencies = [
  "cargo-husky",
  "chrono",
@@ -813,8 +813,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "svc-template-rust-client-grpc"
-version = "0.2.0-develop.0"
+name = "svc-devops-test-client-grpc"
+version = "0.0.2-develop.2"
 dependencies = [
  "prost",
  "prost-types",
