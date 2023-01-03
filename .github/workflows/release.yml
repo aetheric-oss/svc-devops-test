@@ -23,10 +23,22 @@ jobs:
       contents: write
       packages: write
       deployments: write
+      pull-requests: write
     runs-on: ubuntu-latest
     concurrency:
       group: release-${{ github.head_ref || 'main' }}
     steps:
+      - name: Set up environment based on branch
+        if: ${{ env.GITHUB_REF_NAME != 'main' }}
+        run: |
+          if [ "$GITHUB_REF_NAME" == "main" ]
+          then
+            echo "PUBLISH_DRY_RUN=0" >> $GITHUB_ENV
+          else
+            echo "CUSTOM_RELEASE_RULES=fix:prerelease,feat:prerelease,chore:prerelease" >> $GITHUB_ENV
+            echo "PUBLISH_DRY_RUN=1" >> $GITHUB_ENV
+          fi
+
       - id: generate-token
         uses: tibdex/github-app-token@v1
         with:
@@ -39,13 +51,24 @@ jobs:
           fetch-depth: 0
 
       - name: Determine new Tag
-        uses: mathieudutour/github-tag-action@v6.0
+        uses: mathieudutour/github-tag-action@v6.1
         id: tag_version
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           pre_release_branches: develop
           dry_run: true
+          custom_release_rules: "${{ env.CUSTOM_RELEASE_RULES }}"
 
+#      - name: Squash and push automation commits
+#        env:
+#          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+#        run: |
+#          git remote set-url origin https://arrow-tf-github-repositories[bot]:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+#          git config user.email "100382777+arrow-tf-github-repositories[bot]@users.noreply.github.com"
+#          git config user.name "arrow-tf-github-repositories[bot]"
+#          git filter-branch --commit-filter '[ "$GIT_AUTHOR_EMAIL" = "100382777+arrow-tf-github-repositories[bot]@users.noreply.github.com" ] && skip_commit "$@" || git commit-tree "$@"'
+#          git push -f
+#
       - name: Generate Changelog
         id: changelog
         uses: mrchief/universal-changelog-action@v1.3.2
@@ -55,6 +78,7 @@ jobs:
           nextReleaseName: "Release ${{ steps.tag_version.outputs.new_version }}"
 
       - name: Update CHANGELOG.md
+        if: ${{ env.GITHUB_REF_NAME == 'main' }}
         run: |
           cat - CHANGELOG.md > temp <<'CHANGELOG.md-EOF'
           ${{ steps.changelog.outputs.changelog }}
@@ -67,51 +91,19 @@ jobs:
           cargo install cargo-edit
           cargo set-version ${{ steps.tag_version.outputs.new_version }}
           make toml-tidy
+          cargo update
 
-      - name: Commit and push CHANGELOG.md
+      - name: Commit and push release updates
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          CHANGED_FILE: "CHANGELOG.md"
-          MESSAGE: "ci - update changelog\n\n[skip ci]"
+          CHANGED_FILES: "Cargo.lock client-grpc/Cargo.toml server/Cargo.toml CHANGELOG.md"
+          MESSAGE: "ci - update release files\n\n[skip ci]"
         run: |
-          export CONTENT=$(base64 -i ${{ env.CHANGED_FILE }})
-          export SHA=$(git rev-parse ${{ github.ref_name }}:${{ env.CHANGED_FILE }})
-          gh api --method PUT /repos/:owner/:repo/contents/${{ env.CHANGED_FILE }} \
-            --field message="${{ env.MESSAGE }}" \
-            --field content="$CONTENT" \
-            --field encoding="base64" \
-            --field branch="${{ github.ref_name }}" \
-            --field sha="$SHA"
-
-      - name: Commit and push server Cargo.toml
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          CHANGED_FILE: "server/Cargo.toml"
-          MESSAGE: "ci - update server package version\n\n[skip ci]"
-        run: |
-          export CONTENT=$(base64 -i ${{ env.CHANGED_FILE }})
-          export SHA=$(git rev-parse ${{ github.ref_name }}:${{ env.CHANGED_FILE }})
-          gh api --method PUT /repos/:owner/:repo/contents/${{ env.CHANGED_FILE }} \
-            --field message="${{ env.MESSAGE }}" \
-            --field content="$CONTENT" \
-            --field encoding="base64" \
-            --field branch="${{ github.ref_name }}" \
-            --field sha="$SHA"
-
-      - name: Commit and push client-grpc Cargo.toml
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          CHANGED_FILE: "client-grpc/Cargo.toml"
-          MESSAGE: "ci - update client-grpc package version\n\n[skip ci]"
-        run: |
-          export CONTENT=$(base64 -i ${{ env.CHANGED_FILE }})
-          export SHA=$(git rev-parse ${{ github.ref_name }}:${{ env.CHANGED_FILE }})
-          gh api --method PUT /repos/:owner/:repo/contents/${{ env.CHANGED_FILE }} \
-            --field message="${{ env.MESSAGE }}" \
-            --field content="$CONTENT" \
-            --field encoding="base64" \
-            --field branch="${{ github.ref_name }}" \
-            --field sha="$SHA"
+          git remote set-url origin https://arrow-tf-github-repositories[bot]:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+          git config user.email "100382777+arrow-tf-github-repositories[bot]@users.noreply.github.com"
+          git config user.name "arrow-tf-github-repositories[bot]"
+          git commit $CHANGED_FILES -m "$MESSAGE"
+          git push
 
       - name: Generate new Cargo.lock
         run: |
@@ -138,41 +130,41 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           custom_tag: ${{ steps.tag_version.outputs.new_version }}
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: 'amd64,arm64'
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ghcr.io/${{ env.PACKAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}},value=${{ steps.tag_version.outputs.new_tag }}
-            type=semver,pattern={{major}}.{{minor}},value=${{ steps.tag_version.outputs.new_tag }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64,linux/arm64
-          build-args: |
-            PACKAGE_NAME=${{ github.event.repository.name }}
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v2
+#        with:
+#          platforms: 'amd64,arm64'
+#
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v2
+#
+#      - name: Login to GitHub Container Registry
+#        uses: docker/login-action@v2
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Extract metadata (tags, labels) for Docker
+#        id: meta
+#        uses: docker/metadata-action@v4
+#        with:
+#          images: ghcr.io/${{ env.PACKAGE_NAME }}
+#          tags: |
+#            type=ref,event=branch
+#            type=ref,event=pr
+#            type=semver,pattern={{version}},value=${{ steps.tag_version.outputs.new_tag }}
+#            type=semver,pattern={{major}}.{{minor}},value=${{ steps.tag_version.outputs.new_tag }}
+#
+#      - name: Build and push Docker image
+#        uses: docker/build-push-action@v3
+#        with:
+#          push: true
+#          tags: ${{ steps.meta.outputs.tags }}
+#          labels: ${{ steps.meta.outputs.labels }}
+#          platforms: linux/amd64,linux/arm64
+#          build-args: |
+#            PACKAGE_NAME=${{ github.event.repository.name }}
 
       - name: Clean Checkout
         uses: actions/checkout@v3
@@ -180,8 +172,6 @@ jobs:
           ref: ${{ github.ref_name }}
 
       - name: Build and publish client
-        env:
-          PUBLISH_DRY_RUN: 0
         run: |
           make rust-publish
 
