@@ -90,10 +90,12 @@ jobs:
         run: |
           cargo install cargo-edit
           cargo set-version ${{ steps.tag_version.outputs.new_version }}
+          cargo update
           make toml-tidy
           cargo update
 
       - name: Commit and push release updates
+        if: ${{ env.GITHUB_REF_NAME == 'main' }}
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           CHANGED_FILES: "Cargo.lock client-grpc/Cargo.toml server/Cargo.toml CHANGELOG.md"
@@ -104,10 +106,6 @@ jobs:
           git config user.name "arrow-tf-github-repositories[bot]"
           git commit $CHANGED_FILES -m "$MESSAGE"
           git push
-
-      - name: Generate new Cargo.lock
-        run: |
-          cargo update
 
       - name: Commit and push new Cargo.lock
         env:
