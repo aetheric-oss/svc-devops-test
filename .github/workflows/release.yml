@@ -18,7 +18,6 @@ env:
 jobs:
   prepare:
     name: Create Tag and Release notes
-    if: ${{ !contains(github.event.head_commit.message, 'Provisioned by Terraform') }}
     permissions:
       contents: write
       packages: write
@@ -29,7 +28,6 @@ jobs:
       group: release-${{ github.head_ref || 'main' }}
     steps:
       - name: Set up environment based on branch
-        if: ${{ env.GITHUB_REF_NAME != 'main' }}
         run: |
           if [ "$GITHUB_REF_NAME" == "main" ]
           then
@@ -39,16 +37,20 @@ jobs:
             echo "PUBLISH_DRY_RUN=1" >> $GITHUB_ENV
           fi
 
-      - id: generate-token
-        uses: tibdex/github-app-token@v1
+      - name: Import Arrow bot's GPG key for signing commits
+        id: import-gpg
+        uses: crazy-max/ghaction-import-gpg@v4
         with:
-          app_id: ${{ secrets.RELEASE_AUTOMATION_APP_ID }}
-          private_key: ${{ secrets.RELEASE_AUTOMATION_PRIVATE_KEY }}
+          gpg_private_key: ${{ secrets.COMMITBOT_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.COMMITBOT_GPG_PASSPHRASE }}
+          git_config_global: true
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_tag_gpgsign: true
 
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          token: ${{ steps.generate-token.outputs.token }}
           fetch-depth: 0
 
       - name: Determine new Tag
@@ -96,6 +98,7 @@ jobs:
           cargo update
 
       - name: Commit and push release updates
+<<<<<<< HEAD
         if: ${{ env.GITHUB_REF_NAME == 'main' }}
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
@@ -122,6 +125,14 @@ jobs:
             --field encoding="base64" \
             --field branch="${{ github.ref_name }}" \
             --field sha="$SHA"
+=======
+        env:
+          CHANGED_FILES: "Cargo.lock client-grpc/Cargo.toml server/Cargo.toml CHANGELOG.md"
+          MESSAGE: "ci - update release files\n\n[skip ci]"
+        run: |
+          git commit $CHANGED_FILES -m "$MESSAGE"
+          git push
+>>>>>>> 48abe0b (fixup! ci: terraform provisioned file changes)
 
       - name: Push New Tag
         uses: mathieudutour/github-tag-action@v6.0
