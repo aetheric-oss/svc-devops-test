@@ -44,6 +44,7 @@ jobs:
         with:
           app_id: ${{ secrets.RELEASE_AUTOMATION_APP_ID }}
           private_key: ${{ secrets.RELEASE_AUTOMATION_PRIVATE_KEY }}
+
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
