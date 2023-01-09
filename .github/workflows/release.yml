@@ -32,6 +32,7 @@ jobs:
         with:
           app_id: ${{ secrets.RELEASE_AUTOMATION_APP_ID }}
           private_key: ${{ secrets.RELEASE_AUTOMATION_PRIVATE_KEY }}
+
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
@@ -39,7 +40,7 @@ jobs:
           fetch-depth: 0
 
       - name: Determine new Tag
-        uses: mathieudutour/github-tag-action@v6.0
+        uses: mathieudutour/github-tag-action@v6.1
         id: tag_version
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -179,8 +180,6 @@ jobs:
           ref: ${{ github.ref_name }}
 
       - name: Build and publish client
-        env:
-          PUBLISH_DRY_RUN: 0
         run: |
           make rust-publish
 
