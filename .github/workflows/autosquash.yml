@@ -10,6 +10,9 @@ on:
       - 'main'
       - 'develop'
 
+permissions:
+  contents: write
+
 jobs:
   autosquash:
     name: Autosquash
@@ -29,6 +32,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
+          token: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
           ref: ${{ github.head_ref }}
           token: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
           fetch-depth: 0
