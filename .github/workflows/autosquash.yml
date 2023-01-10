@@ -35,7 +35,7 @@ jobs:
 
       - name: Automatic Rebase Autosquash
         run: |
-          git remote set-url origin https://${{ secrets.COMMITBOT_GITHUB_TOKEN }}:x-oauth-basic@github.com/${{ github.repository }}
+          git remote set-url origin https://${{ secrets.COMMITBOT_GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git rebase -i --autosquash origin/${{ github.base_ref }}
           git push -f
         env:
