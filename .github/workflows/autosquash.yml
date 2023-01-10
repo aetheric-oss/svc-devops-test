@@ -11,8 +11,8 @@ on:
       - edited
       - opened
     branches:
-      - main
-      - develop
+      - 'main'
+      - 'develop'
 
 jobs:
   autosquash:
