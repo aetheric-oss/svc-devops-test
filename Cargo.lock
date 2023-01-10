@@ -960,7 +960,7 @@ dependencies = [
 
 [[package]]
 name = "svc-devops-test"
-version = "0.0.2-develop.4"
+version = "0.0.2-develop.5"
 dependencies = [
  "cargo-husky",
  "chrono",
@@ -981,7 +981,7 @@ dependencies = [
 
 [[package]]
 name = "svc-devops-test-client-grpc"
-version = "0.0.2-develop.4"
+version = "0.0.2-develop.5"
 dependencies = [
  "prost",
  "prost-types",
