@@ -5,19 +5,15 @@
 name: Auto-squash
 
 on:
-  check_run:
+  pull_request_target:
     types:
-      # Check runs completing successfully can unblock the corresponding pull requests and make them mergeable.
-      - completed
-  pull_request:
-    types:
-      # A closed pull request makes the checks on the other pull request on the same base outdated.
       - closed
-      # Adding the autosquash label to a pull request can trigger an update or a merge.
-      - labeled
+      - opened
+    branches:
+      - main
+      - develop
   pull_request_review:
     types:
-      # Review approvals can unblock the pull request and make it mergeable.
       - submitted
   # Success statuses can unblock the corresponding pull requests and make them mergeable.
   status: {}
@@ -42,3 +38,5 @@ jobs:
         uses: cirrus-actions/rebase@1.7
         with:
           autosquash: ${{ true }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
