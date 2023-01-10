@@ -34,7 +34,7 @@ jobs:
 
       - name: Automatic Rebase Autosquash
         run: |
-          git rebase -i --autosquash origin/${{ github.base_ref }}
+          git rebase -i --autosquash ${{ github.base_ref }}
           git push -f
         env:
           GITHUB_TOKEN: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
