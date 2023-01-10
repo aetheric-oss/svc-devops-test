@@ -34,9 +34,10 @@ jobs:
 
       - name: Automatic Rebase Autosquash
         run: |
-          git rebase --autosquash origin/${{ github.base_ref }}
+          git rebase -i --autosquash origin/${{ github.base_ref }}
           git push -f
         env:
+          GIT_SEQUENCE_EDITOR: :
           GITHUB_TOKEN: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
           GIT_AUTHOR_NAME: ${{ steps.import-gpg.outputs.name }}
           GIT_AUTHOR_EMAIL: ${{ steps.import-gpg.outputs.email }}
