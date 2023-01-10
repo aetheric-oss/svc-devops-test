@@ -10,13 +10,10 @@ on:
       - closed
       - opened
     branches:
-      - main
       - develop
   pull_request_review:
     types:
       - submitted
-  # Success statuses can unblock the corresponding pull requests and make them mergeable.
-  status: {}
 
 jobs:
   autosquash:
@@ -34,9 +31,12 @@ jobs:
           git_commit_gpgsign: true
           git_tag_gpgsign: true
 
-      - name: Automatic Rebase Autosquash
-        uses: cirrus-actions/rebase@1.7
-        with:
-          autosquash: ${{ true }}
+      - name: Automatic Rebase Autosquash to main
+        if: ${{ env.GITHUB_REF_NAME == 'main' }}
+        run: git rebase --autosquash main
         env:
           GITHUB_TOKEN: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
+          GIT_AUTHOR_NAME: ${{ steps.import-gpg.outputs.name }}
+          GIT_AUTHOR_EMAIL: ${{ steps.import-gpg.outputs.email }}
+          GIT_COMMITTER_NAME: ${{ steps.import-gpg.outputs.name }}
+          GIT_COMMITTER_EMAIL: ${{ steps.import-gpg.outputs.email }}
