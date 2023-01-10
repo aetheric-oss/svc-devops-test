@@ -59,6 +59,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           pre_release_branches: develop
           dry_run: true
+          custom_release_rules: "${{ env.CUSTOM_RELEASE_RULES }}"
 
       - name: Generate Changelog
         id: changelog
