@@ -92,6 +92,16 @@ jobs:
         run: |
           git commit $CHANGED_FILES -m "$MESSAGE"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
+          GIT_AUTHOR_NAME: ${{ steps.import-gpg.outputs.name }}
+          GIT_AUTHOR_EMAIL: ${{ steps.import-gpg.outputs.email }}
+          GIT_COMMITTER_NAME: ${{ steps.import-gpg.outputs.name }}
+          GIT_COMMITTER_EMAIL: ${{ steps.import-gpg.outputs.email }}
+          # git rebase with auto squash will be a noop if not run in interactive mode.
+          # using ':' or 'true' as the sequence editor allows us to automatically apply the squash actions
+          # https://git-scm.com/docs/git-config#Documentation/git-config.txt-sequenceeditor
+          GIT_SEQUENCE_EDITOR: ':'
 
       - name: Push New Tag
         uses: mathieudutour/github-tag-action@v6.0
