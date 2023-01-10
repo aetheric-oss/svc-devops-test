@@ -30,16 +30,14 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
-          #persist-credentials: false
+          token: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Automatic Rebase Autosquash
         run: |
-          #git remote set-url origin https://${{ secrets.COMMITBOT_GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git rebase -i --autosquash origin/${{ github.base_ref }}
           git push -f
         env:
-          GITHUB_TOKEN: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
           GIT_AUTHOR_NAME: ${{ steps.import-gpg.outputs.name }}
           GIT_AUTHOR_EMAIL: ${{ steps.import-gpg.outputs.email }}
           GIT_COMMITTER_NAME: ${{ steps.import-gpg.outputs.name }}
