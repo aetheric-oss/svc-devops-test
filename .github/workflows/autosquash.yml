@@ -5,14 +5,10 @@
 name: Auto-squash
 
 on:
-  pull_request_target:
-    types:
-      - closed
-      - edited
-      - opened
-    branches:
-      - 'main'
-      - 'develop'
+  pull_request:
+  branches:
+    - 'main'
+    - 'develop'
 
 jobs:
   autosquash:
