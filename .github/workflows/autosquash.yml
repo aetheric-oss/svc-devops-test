@@ -8,12 +8,11 @@ on:
   pull_request_target:
     types:
       - closed
+      - edited
       - opened
     branches:
+      - main
       - develop
-  pull_request_review:
-    types:
-      - submitted
 
 jobs:
   autosquash:
@@ -31,9 +30,8 @@ jobs:
           git_commit_gpgsign: true
           git_tag_gpgsign: true
 
-      - name: Automatic Rebase Autosquash to main
-        if: ${{ env.GITHUB_REF_NAME == 'main' }}
-        run: git rebase --autosquash main
+      - name: Automatic Rebase Autosquash
+        run: git rebase --autosquash ${{ env.GITHUB_REF_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
           GIT_AUTHOR_NAME: ${{ steps.import-gpg.outputs.name }}
