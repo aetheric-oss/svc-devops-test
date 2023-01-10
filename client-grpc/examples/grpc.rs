@@ -22,7 +22,7 @@ pub fn get_grpc_endpoint() -> String {
     format!("http://{}:{}", address, port)
 }
 
-/// Example svc-template-client-grpc
+/// Example svc-devops-test-client-grpc
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let grpc_endpoint = get_grpc_endpoint();
