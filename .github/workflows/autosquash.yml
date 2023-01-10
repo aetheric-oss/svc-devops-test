@@ -6,9 +6,9 @@ name: Auto-squash
 
 on:
   pull_request:
-  branches:
-    - 'main'
-    - 'develop'
+    branches:
+      - 'main'
+      - 'develop'
 
 jobs:
   autosquash:
