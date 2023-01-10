@@ -33,7 +33,9 @@ jobs:
           fetch-depth: 0
 
       - name: Automatic Rebase Autosquash
-        run: git rebase --autosquash origin/${{ github.base_ref }}
+        run: |
+          git rebase --autosquash origin/${{ github.base_ref }}
+          git push -f
         env:
           GITHUB_TOKEN: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
           GIT_AUTHOR_NAME: ${{ steps.import-gpg.outputs.name }}
