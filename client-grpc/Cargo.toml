@@ -6,7 +6,7 @@ keywords    = ["vtol", "client"]                                           # max
 license     = "BUSL-1.1"
 name        = "svc-devops-test-client-grpc"
 repository  = "https://github.com/Arrow-air/svc-devops-test"
-version     = "0.0.2-develop.5"
+version     = "0.0.2-develop.6"
 
 categories = [
   "aerospace::drones",
