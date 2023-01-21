@@ -2,8 +2,6 @@
 
 # MODULE_NAME Service
 
-Adding test
-
 1. *Replace the repository name for each:*
 
 ![Rust
@@ -17,7 +15,7 @@ Discord](https://img.shields.io/discord/853833144037277726?style=plastic)
 
 ## :telescope: Overview
 
-FIXME
+devops-test
 
 Directory:
 - `src/`: Source Code and Unit Tests
@@ -89,9 +87,9 @@ There are additional make targets available. You can find all possible targets b
 ## :scroll: Documentation
 The following documents are relevant to this service:
 - :construction: Requirements & User Stories
-- [Concept of Operations - `svc-FIXME`](./docs/conops.md)
-- [Software Design Document (SDD) - `svc-FIXME`](./docs/sdd.md)
-- [Interface Control Document (ICD) - `svc-FIXME`](./docs/icd.md)
+- [Concept of Operations - `svc-devops-test`](./docs/conops.md)
+- [Software Design Document (SDD) - `svc-devops-test`](./docs/sdd.md)
+- [Interface Control Document (ICD) - `svc-devops-test`](./docs/icd.md)
 
 ## :busts_in_silhouette: Arrow DAO
 Learn more about us:
