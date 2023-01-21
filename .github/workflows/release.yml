@@ -165,6 +165,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.ref_name }}
+          token: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
 
       - name: Build and publish client
         run: |
@@ -181,3 +182,15 @@ jobs:
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: ${{ github.ref_name == 'develop' }}
+
+      - name: Rebase develop branch
+        if: ${{ github.ref_name == 'main' }}
+        run: |
+          git checkout develop
+          git pull --rebase origin main
+          git push -f
+        env:
+          GIT_AUTHOR_NAME: ${{ steps.import-gpg.outputs.name }}
+          GIT_AUTHOR_EMAIL: ${{ steps.import-gpg.outputs.email }}
+          GIT_COMMITTER_NAME: ${{ steps.import-gpg.outputs.name }}
+          GIT_COMMITTER_EMAIL: ${{ steps.import-gpg.outputs.email }}
