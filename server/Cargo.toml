@@ -20,6 +20,7 @@ vendored-openssl = ['openssl/vendored']
 cargo-husky  = "1"
 chrono       = { version = "0.4", features = ["serde"] }
 hyper        = "0.14"
+lib-common   = { git = "https://github.com/Arrow-air/lib-common.git", branch = "develop" }
 log          = "0.4"
 openssl      = "0.10"
 prost        = "0.11"
