@@ -8,6 +8,8 @@ on:
     branches:
     - main
   pull_request:
+  paths:
+    - '**.py'
 
 name: Python Checks
 
