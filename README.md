@@ -2,6 +2,8 @@
 
 # MODULE_NAME Service
 
+Adding test
+
 1. *Replace the repository name for each:*
 
 ![Rust
