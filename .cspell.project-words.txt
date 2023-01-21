@@ -21,3 +21,4 @@ vertiport
 vertiports
 commitlint
 healthcheck
+autosquash
