@@ -55,9 +55,9 @@ jobs:
           fetch-depth: 0
 
       - name: Automatic Rebase Autosquash
-        if: ${{ env.GITHUB_REF_NAME == 'develop' }}
+        if: ${{ github.ref_name == 'develop' }}
         run: |
-          git rebase -i --autosquash origin/${{ github.base_ref }}
+          git rebase -i --autosquash origin/main
           git push -f
         env:
           GIT_AUTHOR_NAME: ${{ steps.import-gpg.outputs.name }}
@@ -87,7 +87,7 @@ jobs:
           nextReleaseName: "Release ${{ steps.tag_version.outputs.new_version }}"
 
       - name: Update CHANGELOG.md
-        if: ${{ env.GITHUB_REF_NAME == 'main' }}
+        if: ${{ github.ref_name == 'main' }}
         run: |
           cat - CHANGELOG.md > temp <<'CHANGELOG.md-EOF'
           ${{ steps.changelog.outputs.changelog }}
@@ -180,4 +180,4 @@ jobs:
           release_name: Release ${{ steps.tag_version.outputs.new_version }}
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
-          prerelease: ${{ env.GITHUB_REF_NAME == 'develop' }}
+          prerelease: ${{ github.ref_name == 'develop' }}
