@@ -16,7 +16,7 @@ env:
 
 jobs:
   gendocs:
-    name: Create Tag and Release notes
+    name: Generate and sync API docs
     environment: production
     runs-on: ubuntu-latest
     permissions:
@@ -70,10 +70,10 @@ jobs:
         if: steps.openapi_files.outputs.files_exists == 'true'
         id: openapi_sync_s3
         run: |
-          aws s3 sync ./out/${{ github.event.repository.name }}-openapi.json "s3://${{ secrets.AWS_S3_BUCKET }}${{ secrets.AWS_S3_DOCS_REST_DEST_PATH }}/${BRANCHPATH}/" --delete --size-only | wc -l
+          aws s3 cp ./out/${{ github.event.repository.name }}-openapi.json "s3://${{ secrets.AWS_S3_BUCKET }}${{ secrets.AWS_S3_DOCS_REST_DEST_PATH }}/${BRANCHPATH}/"
       - name: Sync GRPC API docs to S3 for processing
         if: steps.grpc_api_files.outputs.files_exists == 'true'
         id: grpc_api_sync_s3
         run: |
-          aws s3 sync ./out/${{ github.event.repository.name }}-grpc-api.json "s3://${{ secrets.AWS_S3_BUCKET }}${{ secrets.AWS_S3_DOCS_REST_DEST_PATH }}/${BRANCHPATH}/" --delete --size-only | wc -l
+          aws s3 cp ./out/${{ github.event.repository.name }}-grpc-api.json "s3://${{ secrets.AWS_S3_BUCKET }}${{ secrets.AWS_S3_DOCS_REST_DEST_PATH }}/${BRANCHPATH}/"
 
