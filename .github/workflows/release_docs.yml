@@ -11,9 +11,11 @@ on:
 env:
   TERM: xterm
 
+
 jobs:
-  prepare:
+  gendocs:
     name: Create Tag and Release notes
+    environment: production
     runs-on: ubuntu-latest
     concurrency:
       group: release-${{ github.head_ref || 'main' }}
