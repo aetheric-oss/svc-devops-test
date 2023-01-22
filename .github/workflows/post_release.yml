@@ -26,18 +26,26 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Check for develop tag
+      - name: Gather env vars
         run: |
           if printf "%s" "${{ github.ref_name }}" |grep -q -- "-develop" ; then
             echo "BRANCHPATH=develop" >> $GITHUB_ENV
           else
             echo "BRANCHPATH=main" >> $GITHUB_ENV
           fi
+          # Check if we need to build openapi or only grpc
+          if [ -d "openapi" ]; then
+            echo "DOC_TARGETS=rust-openapi rust-grpc-api" >> $GITHUB_ENV
+          else
+            echo Openapi not found, skipping...
+            echo "DOC_TARGETS=rust-grpc-api" >> $GITHUB_ENV
+          fi
 
-      # Generate docs
+      # Generate api docs
       - name:
         run: |
-          make rust-openapi rust-grpc-api
+          echo Building targets: ${DOC_TARGETS}
+          make ${DOC_TARGETS}
       - name: Check for openapi json output
         id: openapi_files
         uses: andstor/file-existence-action@v2
