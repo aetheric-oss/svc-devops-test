@@ -19,6 +19,9 @@ jobs:
     name: Create Tag and Release notes
     environment: production
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     concurrency:
       group: release-${{ github.head_ref || 'main' }}
     steps:
