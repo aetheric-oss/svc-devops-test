@@ -2,13 +2,13 @@
 # This file was provisioned by Terraform
 # File origin: https://github.com/Arrow-air/tf-github/tree/main/src/templates/rust-svc/.github/workflows/release.yml
 
-name: Release API Docs
+name: Post Release Events
 
 on:
   release:
     # See https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#release to be confused
     # Since we want to trigger both on develop and main releases we use published. (created does not trigger on develop)
-    types: [published,prereleased,created]
+    types: [published]
 
 env:
   TERM: xterm
