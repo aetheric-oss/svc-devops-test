@@ -11,8 +11,6 @@ on:
       - 'develop'
 
 env:
-  REGISTRY: ghcr.io
-  PACKAGE_NAME: ${{ github.repository }}
   TERM: xterm
 
 jobs:
@@ -29,12 +27,9 @@ jobs:
     steps:
       - name: Set up environment based on branch
         run: |
-          if [ "$GITHUB_REF_NAME" == "main" ]
+          if [ "$GITHUB_REF_NAME" != "main" ]
           then
-            echo "PUBLISH_DRY_RUN=0" >> $GITHUB_ENV
-          else
             echo "CUSTOM_RELEASE_RULES=fix:prerelease,feat:prerelease,chore:prerelease" >> $GITHUB_ENV
-            echo "PUBLISH_DRY_RUN=1" >> $GITHUB_ENV
           fi
 
       - name: Import Arrow bot's GPG key for signing commits
@@ -123,16 +118,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           custom_tag: ${{ steps.tag_version.outputs.new_version }}
-
-      - name: Clean Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.ref_name }}
-          token: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
-
-      - name: Build and publish client
-        run: |
-          make rust-publish
 
       - name: Create Release
         id: create_release
