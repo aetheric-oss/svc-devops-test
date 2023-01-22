@@ -6,7 +6,9 @@ name: Release API Docs
 
 on:
   release:
-    types: [created]
+    # See https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#release to be confused
+    # Since we want to trigger both on develop and main releases we use published. (created does not trigger on develop)
+    types: [published]
 
 env:
   TERM: xterm
