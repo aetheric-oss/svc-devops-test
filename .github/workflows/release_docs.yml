@@ -1,0 +1,64 @@
+## DO NOT EDIT!
+# This file was provisioned by Terraform
+# File origin: https://github.com/Arrow-air/tf-github/tree/main/src/templates/rust-svc/.github/workflows/release.yml
+
+name: Release API Docs
+
+on:
+  release:
+    types: [created]
+
+env:
+  TERM: xterm
+
+jobs:
+  prepare:
+    name: Create Tag and Release notes
+    runs-on: ubuntu-latest
+    concurrency:
+      group: release-${{ github.head_ref || 'main' }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Check for develop tag
+        run: |
+          if printf "%s" "${{ github.ref_name }}" |grep -q -- "-develop" ; then
+            echo "BRANCHPATH=develop" >> $GITHUB_ENV
+          else
+            echo "BRANCHPATH=main" >> $GITHUB_ENV
+          fi
+
+      # Generate docs
+      - name:
+        run: |
+          make rust-openapi rust-grpc-api
+      - name: Check for openapi json output
+        id: openapi_files
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "out/${{ github.event.repository.name }}-openapi.json"
+      - name: Check for grpc-api output
+        id: grpc_api_files
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "out/${{ github.event.repository.name }}-grpc-api.json"
+      # Login to AWS and Sync docs to AWS S3 bucket
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: "${{ secrets.AWS_ROLE_ARN }}"
+          role-session-name: arrow-openapi-docs
+          aws-region: "us-east-2"
+      - name: Sync OpenAPI docs to S3 for processing
+        if: steps.openapi_files.outputs.files_exists == 'true'
+        id: openapi_sync_s3
+        run: |
+          aws s3 sync ./out/${{ github.event.repository.name }}-openapi.json "s3://${{ secrets.AWS_S3_BUCKET }}${{ secrets.AWS_S3_DOCS_REST_DEST_PATH }}/${BRANCHPATH}/" --delete --size-only | wc -l
+      - name: Sync GRPC API docs to S3 for processing
+        if: steps.grpc_api_files.outputs.files_exists == 'true'
+        id: grpc_api_sync_s3
+        run: |
+          aws s3 sync ./out/${{ github.event.repository.name }}-grpc-api.json "s3://${{ secrets.AWS_S3_BUCKET }}${{ secrets.AWS_S3_DOCS_REST_DEST_PATH }}/${BRANCHPATH}/" --delete --size-only | wc -l
+
