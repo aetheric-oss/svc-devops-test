@@ -503,7 +503,7 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 [[package]]
 name = "lib-common"
 version = "0.1.0"
-source = "git+https://github.com/Arrow-air/lib-common.git?branch=develop#af2e621aee2cd0a68008acf6d45178927f7e25e0"
+source = "git+https://github.com/Arrow-air/lib-common.git?branch=develop#3ef6a28ec8c596df4d852d4a48ef5608665c3990"
 dependencies = [
  "cargo-husky",
  "chrono",
@@ -970,7 +970,7 @@ dependencies = [
 
 [[package]]
 name = "svc-devops-test"
-version = "0.0.2-develop.8"
+version = "0.0.2-develop.10"
 dependencies = [
  "cargo-husky",
  "chrono",
@@ -992,7 +992,7 @@ dependencies = [
 
 [[package]]
 name = "svc-devops-test-client-grpc"
-version = "0.0.2-develop.8"
+version = "0.0.2-develop.10"
 dependencies = [
  "prost",
  "prost-types",
