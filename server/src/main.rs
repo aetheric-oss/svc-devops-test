@@ -1,6 +1,7 @@
 //! gRPC server implementation
 
 ///module svc_storage generated from svc-storage.proto
+#[cfg(not(tarpaulin_include))]
 pub mod svc_devops_test {
     #![allow(unused_qualifications, missing_docs)]
     include!("grpc.rs");
@@ -23,6 +24,15 @@ impl DevopsTestRpc for DevopsTestImpl {
     ) -> Result<Response<ReadyResponse>, Status> {
         let response = ReadyResponse { ready: true };
         Ok(Response::new(response))
+    }
+}
+
+/// Adding one to a number
+#[allow(dead_code)]
+fn add_one_if_lt_ten(a: u32) -> u32 {
+    match a {
+        0..=9 => a + 1,
+        _ => a,
     }
 }
 
@@ -52,5 +62,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
     println!("gRPC server running at: {}", full_grpc_addr);
 
+    println!("test!");
+
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn ut_add_one_if_lt_ten() {
+        let x = 10;
+        assert_eq!(add_one_if_lt_ten(x), x)
+    }
 }

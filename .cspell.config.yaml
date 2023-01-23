@@ -21,4 +21,4 @@ ignorePaths:
   - '*/**Makefile'
   - 'target'
   - 'out'
-  - 'coverage'
+  - 'coverage/'

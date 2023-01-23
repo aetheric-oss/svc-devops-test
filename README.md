@@ -4,6 +4,7 @@
 
 1. *Replace the repository name for each:*
 
+[![Coverage Status](https://coveralls.io/repos/github/Arrow-air/svc-devops-test/badge.svg)](https://coveralls.io/github/Arrow-air/svc-devops-test)
 ![Rust
 Checks](https://github.com/arrow-air/svc-devops-test/actions/workflows/rust_ci.yml/badge.svg?branch=main)
 ![Python Flake8](https://github.com/arrow-air/svc-devops-test/actions/workflows/python_ci.yml/badge.svg?branch=main)
