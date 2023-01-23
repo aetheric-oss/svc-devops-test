@@ -4,10 +4,12 @@
 # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md
 
 on:
-  push:
-    branches:
-    - main
   pull_request:
+    branches:
+      - develop
+      - main
+    paths:
+      - '**.py'
 
 name: Python Checks
 
