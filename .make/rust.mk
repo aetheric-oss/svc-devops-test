@@ -10,6 +10,7 @@ RUSTC_BOOTSTRAP     ?= 0
 RELEASE_TARGET      ?= x86_64-unknown-linux-musl
 PUBLISH_DRY_RUN     ?= 1
 OUTPUTS_PATH        ?= $(SOURCE_PATH)/out
+ADDITIONAL_OPT      ?=
 
 # function with a generic template to run docker with the required values
 # Accepts $1 = command to run, $2 = additional command flags (optional)
@@ -21,6 +22,7 @@ cargo_run = docker run \
 	--rm \
 	--user `id -u`:`id -g` \
 	--workdir=/usr/src/app \
+	$(ADDITIONAL_OPT) \
 	-v "$(SOURCE_PATH)/:/usr/src/app" \
 	-v "$(SOURCE_PATH)/.cargo/registry:/usr/local/cargo/registry" \
 	-e CARGO_INCREMENTAL=$(CARGO_INCREMENTAL) \
@@ -48,6 +50,11 @@ rust-docker-pull:
 	@echo "  $(BOLD)rust-clippy$(SGR0)      -- Run 'cargo clippy --all -- -D warnings'"
 	@echo "  $(BOLD)rust-fmt$(SGR0)         -- Run 'cargo fmt --all -- --check' to check rust file formats."
 	@echo "  $(BOLD)rust-tidy$(SGR0)        -- Run 'cargo fmt --all' to fix rust file formats if needed."
+	@echo "  $(BOLD)rust-doc$(SGR0)         -- Run 'cargo doc --all' to produce rust documentation."
+	@echo "  $(BOLD)rust-openapi$(SGR0)     -- Run 'cargo run -- --api ./out/$(PACKAGE_NAME)-openapi.json'."
+	@echo "  $(BOLD)rust-validate-openapi$(SGR0) -- Run validation on the ./out/$(PACKAGE_NAME)-openapi.json."
+	@echo "  $(BOLD)rust-grpc-api$(SGR0)    -- Generate a $(PACKAGE_NAME)-grpc-api.json from proto/*.proto files."
+	@echo "  $(BOLD)rust-coverage$(SGR0)    -- Run tarpaulin unit test coverage report"
 	@echo "  $(CYAN)Combined targets$(SGR0)"
 	@echo "  $(BOLD)rust-test-all$(SGR0)    -- Run targets: rust-build rust-check rust-test rust-clippy rust-fmt"
 	@echo "  $(BOLD)rust-all$(SGR0)         -- Run targets; rust-clean rust-test-all rust-release"
@@ -97,7 +104,7 @@ rust-example-%: check-cargo-registry rust-docker-pull
 		-e SERVER_PORT_GRPC=$(DOCKER_PORT_GRPC) \
 		-e SERVER_PORT_REST=$(DOCKER_PORT_REST) \
 		-e SERVER_HOSTNAME=$(DOCKER_NAME)-example-server \
-		example --remove-orphans && docker compose down
+		example && docker compose down
 
 rust-clippy: check-cargo-registry rust-docker-pull
 	@echo "$(CYAN)Running clippy...$(SGR0)"
@@ -110,6 +117,10 @@ rust-fmt: check-cargo-registry rust-docker-pull
 rust-tidy: check-cargo-registry rust-docker-pull
 	@echo "$(CYAN)Running rust file formatting fixes...$(SGR0)"
 	@$(call cargo_run,fmt,--all)
+
+rust-doc: check-cargo-registry rust-docker-pull
+	@echo "$(CYAN)Running cargo doc...$(SGR0)"
+	@$(call cargo_run,doc,--no-deps)
 
 rust-openapi: check-cargo-registry rust-docker-pull rust-build
 	@echo "$(CYAN)Generating openapi documentation...$(SGR0)"
@@ -134,5 +145,10 @@ rust-grpc-api:
 		pseudomuto/protoc-gen-doc \
 		--doc_opt=json,$(PACKAGE_NAME)-grpc-api.json
 
-rust-test-all: rust-build rust-check rust-test rust-clippy rust-fmt
+rust-coverage: ADDITIONAL_OPT = --security-opt seccomp='unconfined'
+rust-coverage: check-cargo-registry rust-docker-pull
+	@echo "$(CYAN)Rebuilding and testing with profiling enabled...$(SGR0)"
+	@$(call cargo_run,tarpaulin,--workspace -v --all-features --out Lcov)
+
+rust-test-all: rust-build rust-check rust-test rust-clippy rust-fmt rust-doc
 rust-all: rust-clean rust-test-all rust-release
