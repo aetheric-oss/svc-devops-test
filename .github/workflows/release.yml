@@ -118,8 +118,8 @@ jobs:
           git commit $CHANGED_FILES -m "$MESSAGE"
           git push -f
 
-      - name: Push New Tag
-        uses: mathieudutour/github-tag-action@v6.0
+      - name: Set and Push New Tag
+        uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           custom_tag: ${{ steps.tag_version.outputs.new_version }}
