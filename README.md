@@ -1,6 +1,6 @@
 ![Arrow Banner](https://github.com/Arrow-air/.github/raw/main/profile/assets/arrow_v2_twitter-banner_neu.png)
 
-# MODULE_NAME Service
+# Devops Test Service
 
 1. *Replace the repository name for each:*
 

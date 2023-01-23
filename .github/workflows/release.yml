@@ -101,7 +101,7 @@ jobs:
       - name: Commit and push release updates
         if: ${{ github.ref_name == 'main' }}
         env:
-          CHANGED_FILES: "Cargo.lock client-grpc/Cargo.toml server/Cargo.toml CHANGELOG.md"
+          CHANGED_FILES: ".terraform_init Cargo.lock client-grpc/Cargo.toml server/Cargo.toml CHANGELOG.md"
           RELEASE_COMMIT_MESSAGE: "ci: update release files\n\n[skip ci]"
           GIT_AUTHOR_NAME: ${{ steps.import-gpg.outputs.name }}
           GIT_AUTHOR_EMAIL: ${{ steps.import-gpg.outputs.email }}
@@ -112,6 +112,7 @@ jobs:
           # https://git-scm.com/docs/git-config#Documentation/git-config.txt-sequenceeditor
           GIT_SEQUENCE_EDITOR: ':'
         run: |
+          echo "${{ steps.tag_version.outputs.new_tag }}" >> .terraform_init
           git commit $CHANGED_FILES -m "$RELEASE_COMMIT_MESSAGE"
 
       - name: Push any changes
