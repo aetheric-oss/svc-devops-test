@@ -6,8 +6,10 @@
 on:
   push:
     branches:
-    - main
+      - main
   pull_request:
+    paths:
+      - '**.py'
 
 name: Python Checks
 

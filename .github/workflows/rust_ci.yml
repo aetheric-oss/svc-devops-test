@@ -5,8 +5,15 @@
 on:
   push:
     branches:
-    - main
+      - main
   pull_request:
+    paths:
+      - server/**
+      - client-grpc/**
+      - client-rest/**
+      - src/**
+      - Cargo.lock
+      - Cargo.toml
 
 name: Rust Checks
 
