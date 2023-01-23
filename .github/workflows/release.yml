@@ -25,13 +25,6 @@ jobs:
     concurrency:
       group: release-${{ github.head_ref || 'main' }}
     steps:
-      - name: Set up environment based on branch
-        run: |
-          if [ "$GITHUB_REF_NAME" != "main" ]
-          then
-            echo "CUSTOM_RELEASE_RULES=fix:prerelease,feat:prerelease,chore:prerelease" >> $GITHUB_ENV
-          fi
-
       - name: Import Arrow bot's GPG key for signing commits
         id: import-gpg
         uses: crazy-max/ghaction-import-gpg@v4
@@ -48,6 +41,13 @@ jobs:
         with:
           token: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
           fetch-depth: 0
+
+      - name: Set up environment based on branch
+        run: |
+          if [ "$GITHUB_REF_NAME" != "main" ]
+          then
+            echo "CUSTOM_RELEASE_RULES=fix:prerelease,feat:prerelease,chore:prerelease" >> $GITHUB_ENV
+          fi
 
       - name: Determine new Tag
         uses: mathieudutour/github-tag-action@v6.1
@@ -90,6 +90,7 @@ jobs:
           mv temp CHANGELOG.md
 
       - name: Update package version
+        if: ${{ github.ref_name == 'main' }}
         run: |
           cargo install cargo-edit
           cargo set-version ${{ steps.tag_version.outputs.new_version }}
@@ -98,9 +99,10 @@ jobs:
           cargo update
 
       - name: Commit and push release updates
+        if: ${{ github.ref_name == 'main' }}
         env:
           CHANGED_FILES: "Cargo.lock client-grpc/Cargo.toml server/Cargo.toml CHANGELOG.md"
-          MESSAGE: "ci: update release files\n\n[skip ci]"
+          RELEASE_COMMIT_MESSAGE: "ci: update release files\n\n[skip ci]"
           GIT_AUTHOR_NAME: ${{ steps.import-gpg.outputs.name }}
           GIT_AUTHOR_EMAIL: ${{ steps.import-gpg.outputs.email }}
           GIT_COMMITTER_NAME: ${{ steps.import-gpg.outputs.name }}
@@ -110,10 +112,13 @@ jobs:
           # https://git-scm.com/docs/git-config#Documentation/git-config.txt-sequenceeditor
           GIT_SEQUENCE_EDITOR: ':'
         run: |
-          git commit $CHANGED_FILES -m "$MESSAGE"
+          git commit $CHANGED_FILES -m "$RELEASE_COMMIT_MESSAGE"
+
+      - name: Push any changes
+        run: |
           git push -f
 
-      - name: Push New Tag
+      - name: Set and Push New Tag
         uses: mathieudutour/github-tag-action@v6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
