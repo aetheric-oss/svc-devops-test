@@ -22,7 +22,7 @@ jobs:
       id-token: write
       contents: read
     concurrency:
-      group: api-docs-${{ github.ref_name }}
+      group: api-docs-sync
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
