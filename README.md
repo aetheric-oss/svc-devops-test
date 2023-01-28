@@ -2,7 +2,7 @@
 
 # Devops Test Service
 
-Can be used to test workflows
+Can be used to test workflows and Terraform provisioning.
 
 1. *Replace the repository name for each:*
 
