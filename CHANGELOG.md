@@ -1,3 +1,14 @@
+## [Release 0.1.2](https://github.com/Arrow-air/svc-devops-test/releases/tag/v0.1.2)
+
+### 🛠 Maintenance
+
+- update release files ([`4646b66`](https://github.com/Arrow-air/svc-devops-test/commit/4646b66ec9bcf34e5520bc52a290ef1b7f09342b))
+- terraform provisioned file changes ([`2643dff`](https://github.com/Arrow-air/svc-devops-test/commit/2643dff084289dbaeb10e9a6b96052b3ae01ffe0))
+
+### 📚 Documentation
+
+-  **readme:** add line for test ([`e011b9a`](https://github.com/Arrow-air/svc-devops-test/commit/e011b9a0d4c04fb0d0b8a137d87a7943ec595a33))
+
 ## [Release 0.1.1](https://github.com/Arrow-air/svc-devops-test/releases/tag/v0.1.1)
 
 ### 🛠 Maintenance
