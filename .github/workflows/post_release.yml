@@ -138,7 +138,7 @@ jobs:
     concurrency:
       group: rust-docs-sync
     env:
-      AWS_S3_DOCS_RUST_DEST_PATH: "/${{ github.event.repository.name }}/"
+      AWS_S3_DOCS_RUST_DEST_PATH: "/rust-docs/${{ github.event.repository.name }}/"
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
