@@ -128,6 +128,45 @@ jobs:
           build-args: |
             PACKAGE_NAME=${{ github.event.repository.name }}
 
+  rust-docs:
+    name: Generate and sync Rust docs
+    environment: production
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    concurrency:
+      group: rust-docs-sync
+    env:
+      AWS_S3_DOCS_RUST_DEST_PATH: "/${{ github.event.repository.name }}/"
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Gather env vars
+        run: |
+          if printf "%s" "${{ github.ref_name }}" |grep -q -- "-develop" ; then
+            echo "BRANCHPATH=develop" >> $GITHUB_ENV
+          else
+            echo "BRANCHPATH=main" >> $GITHUB_ENV
+          fi
+
+      # Generate rust docs
+      - name:
+        run: |
+          make rust-doc
+      # Login to AWS and Sync docs to AWS S3 bucket
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: "arn:aws:iam::${{ secrets.AWS_ACCOUNT_WEBSITE }}:role/${{ secrets.AWS_S3_RUST_DOCS_ROLE }}"
+          role-session-name: arrow-rust-docs
+          aws-region: "us-east-2"
+      - name: Sync rust docs to S3 for processing
+        run: |
+          aws s3 sync ./target/doc/ "s3://${{ secrets.AWS_S3_RUST_DOCS_BUCKET }}${{ env.AWS_S3_DOCS_RUST_DEST_PATH }}${BRANCHPATH}/"  --delete --size-only
+
   grpc_client_release:
     name: Publish client to crates.io
     runs-on: ubuntu-latest
