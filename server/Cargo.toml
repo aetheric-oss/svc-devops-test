@@ -6,7 +6,7 @@ keywords    = ["vtol", "server", "devops-test"]                            # max
 license     = "BUSL-1.1"
 name        = "svc-devops-test"
 repository  = "https://github.com/Arrow-air/svc-devops-test"
-version     = "0.1.2"
+version     = "0.1.3"
 
 categories = [
   "aerospace::drones",
