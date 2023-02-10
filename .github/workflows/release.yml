@@ -119,7 +119,7 @@ jobs:
           # https://git-scm.com/docs/git-config#Documentation/git-config.txt-sequenceeditor
           GIT_SEQUENCE_EDITOR: ':'
         run: |
-          git commit $CHANGED_FILES -m "$RELEASE_COMMIT_MESSAGE"
+          git commit $CHANGED_FILES -m "$(echo -e $RELEASE_COMMIT_MESSAGE)"
 
       - name: Push any changes
         run: |
