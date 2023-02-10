@@ -3,7 +3,6 @@
 # Devops Test Service
 
 Can be used to test workflows and Terraform provisioning.
-test test trigger ci
 
 1. *Replace the repository name for each:*
 
