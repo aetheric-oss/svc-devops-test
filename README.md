@@ -3,8 +3,6 @@
 # Devops Test Service
 
 Can be used to test workflows and Terraform provisioning.
-Testing docker build fixes
-Using the right commit message
 
 1. *Replace the repository name for each:*
 
