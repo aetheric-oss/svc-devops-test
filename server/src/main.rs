@@ -35,6 +35,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .parse::<u16>()
         .unwrap_or(50051);
 
+    // Intentional comment add to trigger workflow
     let full_grpc_addr = format!("[::]:{}", grpc_port).parse()?;
 
     let (mut health_reporter, health_service) = tonic_health::server::health_reporter();
