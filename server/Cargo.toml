@@ -1,42 +1,82 @@
 [package]
 description = "Arrow devops test service GRPC server"
-edition     = "2021"                                                       # Allowed values are 2015, 2018, 2021
-homepage    = "https://www.arrowair.com/docs/documentation/services/intro"
-keywords    = ["vtol", "server", "devops-test"]                            # max 5
-license     = "BUSL-1.1"
+keywords    = ["vtol", "server", "grpc", "rest", "devops-test"] # max 5
 name        = "svc-devops-test"
-repository  = "https://github.com/Arrow-air/svc-devops-test"
 version     = "0.1.4-develop.2"
 
-categories = [
-  "aerospace::drones",
-  "aerospace::protocols",
-] # max 5 -- https://crates.io/category_slugs
+authors.workspace      = true
+categories.workspace   = true
+edition.workspace      = true
+homepage.workspace     = true
+license-file.workspace = true
+repository.workspace   = true
 
 [features]
-vendored-openssl = ['openssl/vendored']
+default          = []
+dev              = ["mock"]
+test_util        = ["mock", "stub_backends"]
+vendored-openssl = ["openssl/vendored"]
+# Will add a 'mock' module for the enabled resources, providing access to mock data generation functions
+mock = []
+# Will use a stubbed backend connection, only use for tests!
+stub_backends = [
+  # FIXME: add mock_clients of actual services you're depending on
+]
+# Will implement stub functions for the server, only use for tests!
+stub_server = ["test_util"]
+# Only added to support client-grpc feature when running tests
+stub_client = ["stub_backends"]
 
 [dependencies]
+anyhow       = "1.0"
+axum         = "0.5"
 cargo-husky  = "1"
 chrono       = { version = "0.4", features = ["serde"] }
+clap         = { version = "4.4", features = ["derive"] }
+config       = "0.13"
+dotenv       = "0.15"
 hyper        = "0.14"
-lib-common   = { git = "https://github.com/Arrow-air/lib-common.git", branch = "develop" }
 log          = "0.4"
 openssl      = "0.10"
-prost        = "0.11"
-prost-build  = "0.11"
-prost-types  = "0.11"
+prost        = "0.12"
 serde        = "1.0"
 serde_json   = "1.0"
-tokio        = { version = "1.20", features = ["full"] }
+tokio        = { version = "1.33", features = ["full"] }
 tokio-util   = "0.7"
-tonic        = "0.8"
-tonic-health = "0.7"
+tonic        = "0.10"
+tonic-health = "0.10"
+tower        = { version = "0.4", features = ["limit"] }
+tower-http   = { version = "0.4", features = ["cors", "trace"] }
 
-[build-dependencies]
-tonic-build = "0.8"
+[dependencies.lib-common]
+git = "https://github.com/Arrow-air/lib-common"
+tag = "latest-develop"
+
+[dependencies.log4rs]
+features = [
+  "background_rotation",
+  "rolling_file_appender",
+  "json_format",
+  "gzip",
+]
+version = "1.2"
+
+[dependencies.utoipa]
+features = ["axum_extras", "chrono"]
+version  = "4.0"
+
+[dev-dependencies]
+logtest = "2.0"
 
 [dev-dependencies.cargo-husky]
 default-features = false          # Disable features which are enabled by default
 features         = ["user-hooks"]
 version          = "1"
+
+# Make sure we enable the required modules when running tests
+[dev-dependencies.svc-devops-test]
+features = ["dev"]
+path     = "."
+
+[build-dependencies]
+tonic-build = "0.10"
