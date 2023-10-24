@@ -1,3 +1,22 @@
+## [Release 0.1.4](https://github.com/Arrow-air/svc-devops-test/releases/tag/v0.1.4)
+
+### 🐛 Fixes
+
+- trigger ci ([`c539c39`](https://github.com/Arrow-air/svc-devops-test/commit/c539c39677e4510d07d9ed847c97dc5cd704eead))
+- docs ([`dc89b11`](https://github.com/Arrow-air/svc-devops-test/commit/dc89b11987a342b4040910be98b3f424cfeb59f0))
+
+### 🛠 Maintenance
+
+- update release files ([`fbe55c7`](https://github.com/Arrow-air/svc-devops-test/commit/fbe55c7b76d673387c4a90783466ac58a0a35770))
+- terraform provisioned file changes ([`30f90e3`](https://github.com/Arrow-air/svc-devops-test/commit/30f90e367ade5566c26afb5b2f5814312c2ecd07))
+- fix cargo.toml ([`cd87bf9`](https://github.com/Arrow-air/svc-devops-test/commit/cd87bf9cf261e34420479cd58b6bbcf6fb5577d4))
+
+### 📚 Documentation
+
+-  **readme:** test docker build ([`be6b9b1`](https://github.com/Arrow-air/svc-devops-test/commit/be6b9b183eb08667ba83dbbbaa7182caadf6c21b))
+-  **readme:** use correct commit message ([`afe3e0b`](https://github.com/Arrow-air/svc-devops-test/commit/afe3e0bf0bd4a7765a233cf832debd5cdf07defe))
+-  **readme:** remove test text ([`ba3dff2`](https://github.com/Arrow-air/svc-devops-test/commit/ba3dff2777fcb99b1fe98cafe416c29f4abf3b37))
+
 ## [Release 0.1.3](https://github.com/Arrow-air/svc-devops-test/releases/tag/v0.1.3)
 
 ### 🛠 Maintenance
