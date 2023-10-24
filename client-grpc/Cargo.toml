@@ -2,7 +2,7 @@
 description = "Arrow devops-test service gRPC client"
 keywords    = ["vtol", "client", "grpc", "devops-test"] # max 5
 name        = "svc-devops-test-client-grpc"
-version     = "0.1.4-develop.2"
+version     = "0.1.4-develop.3"
 
 authors.workspace      = true
 categories.workspace   = true
