@@ -22,3 +22,7 @@ vertiports
 commitlint
 healthcheck
 autosquash
+appender
+dotenv
+logtest
+utoipa
