@@ -1,6 +1,6 @@
 ## DO NOT EDIT!
-# This file was provisioned by Terraform
-# File origin: https://github.com/Arrow-air/tf-github/tree/main/src/templates/all/.make/markdown.mk
+# This file was provisioned by OpenTofu
+# File origin: https://github.com/aetheric-oss/tofu-github/tree/main/src/modules/vars/templates/all/.make/markdown.mk
 
 MARKDOWN_FILES ?= $(shell find . -type f -iname '*md' ! -iwholename "*./node_modules/*" ! -path "./build" ! -iwholename "*.terraform*" ! -iwholename "*.cargo/*" ! -iwholename "./target/*")
 LINK_CHECKER_JSON ?= .link-checker.config.json
@@ -25,6 +25,6 @@ endif
 		--user `id -u`:`id -g` \
 		-w "/usr/src/app" \
 		-v "$(PWD):/usr/src/app" \
-		-t ghcr.io/tcort/markdown-link-check:3.10 \
+		-t ghcr.io/tcort/markdown-link-check:3 \
 		-c $(LINK_CHECKER_JSON) $(MARKDOWN_FILES)
 endif

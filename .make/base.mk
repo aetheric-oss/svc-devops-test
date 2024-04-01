@@ -1,13 +1,13 @@
 ## DO NOT EDIT!
-# This file was provisioned by Terraform
-# File origin: https://github.com/Arrow-air/tf-github/tree/main/src/templates/all/.make/base.mk
+# This file was provisioned by OpenTofu
+# File origin: https://github.com/aetheric-oss/tofu-github/tree/main/src/modules/vars/templates/all/.make/base.mk
 
 SHELL := /bin/bash
 
 SANITYCHECKS_IMAGE_NAME := ghcr.io/arrow-air/tools/arrow-sanitychecks
-SANITYCHECKS_IMAGE_TAG  := 0.3
+SANITYCHECKS_IMAGE_TAG  := 0.4
 
-SOURCE_PATH      ?= $(PWD)
+SOURCE_PATH ?= $(PWD)
 
 # Style templates for console output.
 GREEN  := $(shell echo -e `tput setaf 2`)
