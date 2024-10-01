@@ -36,6 +36,8 @@ services:
     profiles:
       - ut-coverage
 
+  # Runs coverage for integration tests. Will use stubbed backends since we only want to see if all code is covered.
+  # For full integration tests, the 'integration-test' target is available
   it-coverage:
     <<: *coverage
     container_name: aetheric-${PACKAGE_NAME}-it-coverage
