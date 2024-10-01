@@ -26,7 +26,7 @@ ifeq ("$(CARGO_MANIFEST_PATH)", "")
 	cargo_run = echo "$(BOLD)$(YELLOW)No Cargo.toml found in any of the subdirectories, skipping cargo check...$(SGR0)"
 else
 	cargo_run = docker run \
-		--name=$(DOCKER_NAME)-$(subst $(COMMA),_,$@) \
+		--name=$(PACKAGE_NAME)-$(subst $(COMMA),_,$@) \
 		--rm \
 		--user $(DOCKER_USER_ID):$(DOCKER_GROUP_ID) \
 		--workdir=/usr/src/app \
@@ -123,7 +123,7 @@ rust-example-%: check-cargo-registry check-logs-dir rust-docker-pull docker-buil
 		-e EXAMPLE_TARGET=$(EXAMPLE_TARGET) \
 		-e SERVER_PORT_GRPC=$(DOCKER_PORT_GRPC) \
 		-e SERVER_PORT_REST=$(DOCKER_PORT_REST) \
-		-e SERVER_HOSTNAME=$(DOCKER_NAME)-web-server \
+		-e SERVER_HOSTNAME=$(PACKAGE_NAME)-web-server \
 		example ; docker compose down
 
 rust-clippy: check-cargo-registry rust-docker-pull
