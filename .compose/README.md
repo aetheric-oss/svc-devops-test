@@ -77,10 +77,10 @@ docker compose --profile realm up -d
 
 Stop stack:
 ```bash
-docker compose --profile realm-tools down
+docker compose --profile realm down
 ```
 
-### Full stack including tools
+### Full Realm services stack including tools
 
 `compose.yaml`
 ```yaml
