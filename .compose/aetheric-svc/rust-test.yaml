@@ -41,7 +41,7 @@ services:
 
   integration-test:
     <<: *test
-    container_name: aetheric-${PACKAGE_NAME1}-it
+    container_name: aetheric-${PACKAGE_NAME}-it
     command: sh -c "
       cargo test \
         --manifest-path '${CARGO_MANIFEST_PATH:-Cargo.toml}' \
