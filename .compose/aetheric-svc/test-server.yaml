@@ -20,7 +20,7 @@ services:
     profiles:
       - it-coverage
       - integration-test
-    
+
   web-server-stubbed:
     extends:
       file: base.yaml
