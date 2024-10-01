@@ -43,7 +43,7 @@ services:
       - PACKAGE_FEATURES=${PACKAGE_IT_FEATURES}
       - SERVER_HOSTNAME=aetheric-${PACKAGE_NAME}-web-server
     depends_on:
-      web-server:
+      web-server-stubbed:
         condition: service_healthy
     profiles:
       - it-coverage
