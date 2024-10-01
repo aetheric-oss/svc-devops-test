@@ -17,6 +17,8 @@ services:
         - ENABLE_FEATURES=${PACKAGE_RELEASE_FEATURES}
       tags:
         - ${PACKAGE_NAME}:local
+    profiles:
+      - integration-test
 
   web-server-stubbed:
     extends:
@@ -30,3 +32,7 @@ services:
         - ENABLE_FEATURES=${PACKAGE_RELEASE_FEATURES},stub_backends
       tags:
         - ${PACKAGE_NAME}:local-stubbed
+    profiles:
+      - it-coverage
+      - ut-coverage
+      - example
