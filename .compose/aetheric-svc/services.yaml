@@ -7,6 +7,8 @@
 configs:
   log4rs:
     file: ../../log4rs.yaml
+  dot-env:
+    file: ../../.env
 
 networks:
   aetheric-realm:
