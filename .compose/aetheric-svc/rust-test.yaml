@@ -8,19 +8,21 @@
 x-test: &test
   user: ${DOCKER_USER_ID:-0}:${DOCKER_GROUP_ID:-0}
   image: ${RUST_IMAGE_NAME}:${RUST_IMAGE_TAG}
+  networks:
+    - aetheric-realm
   volumes:
     - type: bind
-      source: "${SOURCE_PATH:-..}/"
+      source: "${SOURCE_PATH:-../..}/"
       target: "/usr/src/app"
     - type: bind
       source: "${SOURCE_PATH:-../..}/.cargo/registry"
       target: "/usr/local/cargo/registry"
     - type: bind
-      source: ../logs/
+      source: ../../logs/
       target: /logs/
   configs:
     - source: log4rs
-      target: ${LOG_CONFIG}
+      target: ${LOG_CONFIG:-/log4rs.yaml}
     - source: dot-env
       target: /.env
   security_opt:
