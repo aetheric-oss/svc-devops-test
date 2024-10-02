@@ -136,6 +136,9 @@ services:
     extends:
       file: base.yaml
       service: server
+    depends_on:
+      svc-assets:
+        condition: service_healthy
 
   gis:
     image: ${GIS_IMAGE:-ghcr.io/aetheric-oss/svc-assets}:${GIS_TAG:-latest-develop}
