@@ -17,6 +17,9 @@ services:
         - ENABLE_FEATURES=${PACKAGE_RELEASE_FEATURES}
       tags:
         - ${PACKAGE_NAME}:local
+    depends_on:
+      svc-assets:
+        condition: service_healthy
     profiles:
       - integration-test
 
