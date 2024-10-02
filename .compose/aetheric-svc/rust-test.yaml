@@ -13,7 +13,7 @@ x-test: &test
       source: "${SOURCE_PATH:-..}/"
       target: "/usr/src/app"
     - type: bind
-      source: "${SOURCE_PATH:-..}/.cargo/registry"
+      source: "${SOURCE_PATH:-../..}/.cargo/registry"
       target: "/usr/local/cargo/registry"
     - type: bind
       source: ../logs/
