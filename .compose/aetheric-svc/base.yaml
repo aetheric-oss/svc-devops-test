@@ -31,3 +31,5 @@ services:
     configs:
       - source: log4rs
         target: ${LOG_CONFIG:-/log4rs.yaml}
+      - source: dot-env
+        target: /.env
