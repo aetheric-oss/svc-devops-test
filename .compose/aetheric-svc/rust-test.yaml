@@ -66,6 +66,7 @@ services:
     command: cargo run --manifest-path "${CARGO_MANIFEST_PATH:-Cargo.toml}" --example "${EXAMPLE_TARGET:-grpc}"
     environment:
       - SERVER_HOSTNAME=aetheric-${PACKAGE_NAME}-web-server-stubbed
+      - SERVER_PORT_REST=${DOCKER_PORT_REST:-8000}
     depends_on:
       web-server-stubbed:
         condition: service_healthy
