@@ -9,7 +9,7 @@ services:
     extends:
       file: base.yaml
       service: server
-    container_name: ${DOCKER_NAME}-web-server
+    container_name: aetheric-${PACKAGE_NAME}-web-server
     build:
       context: ${DOCKER_BUILD_PATH:-../.}
       args:
@@ -27,7 +27,7 @@ services:
     extends:
       file: base.yaml
       service: server
-    container_name: ${DOCKER_NAME}-web-server-stubbed
+    container_name: aetheric-${PACKAGE_NAME}-web-server-stubbed
     build:
       context: ${DOCKER_BUILD_PATH:-../.}
       args:
