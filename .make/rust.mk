@@ -51,14 +51,13 @@ dev-docker-pull:
 	@echo "$(SMUL)$(BOLD)$(GREEN)Rust$(SGR0)"
 	@echo "  $(YELLOW)All cargo commands will use '--manifest-path $(CARGO_MANIFEST_PATH)'$(SGR0)"
 	@echo "  $(BOLD)rust-build$(SGR0)       -- Run 'cargo build'"
+	@echo "  $(BOLD)rust-test$(SGR0)        -- Run 'cargo test --workspace'"
 	@echo "  $(BOLD)rust-release$(SGR0)     -- Run 'cargo build --release --target RELEASE_TARGET'"
 	@echo "                     (RELEASE_TARGET=$(RELEASE_TARGET))"
 	@echo "  $(BOLD)rust-publish$(SGR0)     -- Run 'cargo publish --package $(PUBLISH_PACKAGE_NAME)'"
 	@echo "                     uses '--dry-run' by default, automation uses PUBLISH_DRY_RUN=0 to upload crate"
 	@echo "  $(BOLD)rust-clean$(SGR0)       -- Run 'cargo clean'"
 	@echo "  $(BOLD)rust-check$(SGR0)       -- Run 'cargo check'"
-	@echo "  $(BOLD)rust-test$(SGR0)        -- Run 'cargo test --workspace'"
-	@echo "  $(BOLD)rust-example-ARG$(SGR0) -- Run 'cargo run --example ARG' (replace ARG with example name)"
 	@echo "  $(BOLD)rust-clippy$(SGR0)      -- Run 'cargo clippy --workspace -- -D warnings'"
 	@echo "  $(BOLD)rust-fmt$(SGR0)         -- Run 'cargo fmt --workspace -- --check' to check rust file formats."
 	@echo "  $(BOLD)rust-tidy$(SGR0)        -- Run 'cargo fmt --workspace' to fix rust file formats if needed."
@@ -66,7 +65,11 @@ dev-docker-pull:
 	@echo "  $(BOLD)rust-openapi$(SGR0)     -- Run 'cargo run -- --api ./out/$(PACKAGE_NAME)-openapi.json'."
 	@echo "  $(BOLD)rust-validate-openapi$(SGR0) -- Run validation on the ./out/$(PACKAGE_NAME)-openapi.json."
 	@echo "  $(BOLD)rust-grpc-api$(SGR0)    -- Generate a $(PACKAGE_NAME)-grpc-api.json from proto/*.proto files."
-	@echo "  $(BOLD)rust-coverage$(SGR0)    -- Run tarpaulin unit test coverage report"
+	@echo "  $(BOLD)rust-example-grpc$(SGR0)-- Run 'docker compose run --rm example' EXAMPLE_TARGET=grpc with stubbed backend server"
+	@echo "  $(BOLD)rust-example-rest$(SGR0)-- Run 'docker compose run --rm example' EXAMPLE_TARGET=rest with stubbed backend server"
+	@echo "  $(BOLD)rust-ut-coverage$(SGR0) -- Run 'docker compose run --rm ut-coverage' with 'test_util' feature enabled to generate tarpaulin unit test coverage report"
+	@echo "  $(BOLD)rust-it-coverage$(SGR0) -- Run 'docker compose run --rm it-coverage' with 'test_util' feature enabled to generate tarpaulin integration test coverage report"
+	@echo "  $(BOLD)rust-it-full$(SGR0)     -- Run 'docker compose run --rm it-full' to run full integration test with running backends"
 	@echo "  $(CYAN)Combined targets$(SGR0)"
 	@echo "  $(BOLD)rust-test-all$(SGR0)    -- Run targets: rust-build rust-check rust-test rust-clippy rust-fmt"
 	@echo "  $(BOLD)rust-all$(SGR0)         -- Run targets; rust-clean rust-test-all rust-release"
@@ -111,21 +114,6 @@ rust-test: check-cargo-registry rust-docker-pull rust-test-features
 	@echo "$(CYAN)Running cargo test with features [$(PACKAGE_UT_FEATURES)]...$(SGR0)"
 	@$(call cargo_run,test,--features $(PACKAGE_UT_FEATURES) --workspace)
 
-rust-example-%: EXAMPLE_TARGET=$*
-rust-example-%: DOCKER_IMAGE_TAG=dev
-rust-example-%: check-cargo-registry check-logs-dir rust-docker-pull docker-build-dev
-	@echo "$(YELLOW) Make sure the $(DOCKER_IMAGE_NAME):dev image is available by runnning 'make docker-build-dev' first.$(SGR0)"
-	@docker compose run \
-		--user $(DOCKER_USER_ID):$(DOCKER_GROUP_ID) \
-		--rm \
-		-e CARGO_INCREMENTAL=1 \
-		-e RUSTC_BOOTSTRAP=0 \
-		-e EXAMPLE_TARGET=$(EXAMPLE_TARGET) \
-		-e SERVER_PORT_GRPC=$(DOCKER_PORT_GRPC) \
-		-e SERVER_PORT_REST=$(DOCKER_PORT_REST) \
-		-e SERVER_HOSTNAME=$(PACKAGE_NAME)-web-server \
-		example ; docker compose down
-
 rust-clippy: check-cargo-registry rust-docker-pull
 	@echo "$(CYAN)Running clippy...$(SGR0)"
 	@$(call cargo_run,clippy,--workspace -- -D warnings)
@@ -164,6 +152,12 @@ rust-grpc-api:
 		-v $(OUTPUTS_PATH):/out \
 		pseudomuto/protoc-gen-doc \
 		--doc_opt=json,$(PACKAGE_NAME)-grpc-api.json
+
+rust-example-grpc: EXAMPLE_TARGET=grpc
+rust-example-grpc: check-cargo-registry check-logs-dir rust-docker-pull docker-compose-run-example
+
+rust-example-rest: EXAMPLE_TARGET=rest
+rust-example-rest: check-cargo-registry check-logs-dir rust-docker-pull docker-compose-run-example
 
 # Run unit test for this service.
 # Client stubs can be enabled since we don't need to test any integrations.
