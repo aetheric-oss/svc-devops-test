@@ -13,7 +13,6 @@ x-coverage: &coverage
     cargo tarpaulin \
       -l -v -t 600 \
       --manifest-path '${CARGO_MANIFEST_PATH:-Cargo.toml}' \
-      --engine llvm \
       --workspace \
       --tests \
       --features $${PACKAGE_FEATURES:-default} \
