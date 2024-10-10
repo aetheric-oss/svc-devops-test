@@ -1,33 +1,31 @@
-# Concept of Operations - `svc-FIXME`
+![Aetheric Banner](https://github.com/aetheric-oss/.github/raw/main/assets/doc-banner.png)
 
-<center>
+# Concept of Operations - `svc-devops-test`
 
-<img src="https://github.com/Arrow-air/tf-github/raw/main/src/templates/doc-banner-services.png" style="height:250px" />
-
-</center>
-
-Attribute | Description
---- | ---
-Maintainer | [@Arrow-air/services](https://github.com/orgs/Arrow-air/teams)
-Status | Draft
-  
 FIXME: Some of the headings below may not apply to your microservice. Remove if so.
 
-## Overview
+## :telescope: Overview
 
 FIXME - What does this microservice do, in brief?
 
-## Related Documents
+### Metadata
+
+| Attribute     | Description                                                                    |
+| ------------- |--------------------------------------------------------------------------------|
+| Maintainer(s) | [@aetheric-oss/dev-realm](https://github.com/orgs/aetheric-oss/teams/dev-realm)|
+| Status        | Draft                                                                          |
+
+## :books: Related Documents
 
 Document | Description
 --- | ---
-[High-Level Concept of Operations (CONOPS)](https://github.com/Arrow-air/se-services/blob/develop/docs/conops.md) | Overview of Arrow microservices.
-[High-Level Interface Control Document (ICD)](https://github.com/Arrow-air/se-services/blob/develop/docs/icd.md) | Interfaces and frameworks common to all Arrow microservices.
-:construction: Requirements - `svc-FIXME` | Requirements and user stories for this microservice.
-[Interface Control Document (ICD) - `svc-FIXME`](./icd.md) | Defines the inputs and outputs of this microservice.
-[Software Design Document (SDD) - `svc-FIXME`](./sdd.md) | Specifies the internal activity of this microservice.
+[High-Level Concept of Operations (CONOPS)](https://github.com/aetheric-oss/se-services/blob/develop/docs/conops.md) | Overview of Aetheric microservices.
+[High-Level Interface Control Document (ICD)](https://github.com/aetheric-oss/se-services/blob/develop/docs/icd.md)  | Interfaces and frameworks common to all Aetheric microservices.
+[Requirements - `svc-devops-test`](FIXME - generate a link specifically for this module's view in NocoDB) | Requirements and user stories for this microservice.
+[Interface Control Document (ICD) - `svc-devops-test`](./icd.md) | Defines the inputs and outputs of this microservice.
+[Software Design Document (SDD) - `svc-devops-test`](./sdd.md) | Specifies the internal activity of this microservice.
 
-## Motivation
+## :raised_hands: Motivation
 
 FIXME - Why is it needed?
 

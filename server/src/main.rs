@@ -1,56 +1,51 @@
-//! gRPC server implementation
+//! Main function starting the server and initializing dependencies.
 
-///module svc_storage generated from svc-storage.proto
-pub mod svc_devops_test {
-    #![allow(unused_qualifications, missing_docs)]
-    include!("grpc.rs");
-}
+use grpc::server::grpc_server;
+use lib_common::logger::load_logger_config_from_file;
+use log::info;
+use rest::{generate_openapi_spec, server::rest_server, ApiDoc};
+use svc_devops_test::*;
 
-use svc_devops_test::devops_test_rpc_server::{DevopsTestRpc, DevopsTestRpcServer};
-use svc_devops_test::{QueryIsReady, ReadyResponse};
-use tonic::{transport::Server, Request, Response, Status};
-
-///Implementation of gRPC endpoints
-#[derive(Debug, Default, Copy, Clone)]
-pub struct DevopsTestImpl {}
-
-#[tonic::async_trait]
-impl DevopsTestRpc for DevopsTestImpl {
-    /// Returns ready:true when service is available
-    async fn is_ready(
-        &self,
-        _request: Request<QueryIsReady>,
-    ) -> Result<Response<ReadyResponse>, Status> {
-        let response = ReadyResponse { ready: true };
-        Ok(Response::new(response))
-    }
-}
-
-///Main entry point: starts gRPC Server on specified address and port
+/// Main entry point: starts gRPC Server on specified address and port
 #[tokio::main]
+#[cfg(not(tarpaulin_include))]
+// no_coverage: (Rnever) main entry point of the application
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // GRPC Server
-    let grpc_port = std::env::var("DOCKER_PORT_GRPC")
-        .unwrap_or_else(|_| "50051".to_string())
-        .parse::<u16>()
-        .unwrap_or(50051);
+    // Will use default config settings if no environment vars are found.
+    let config = Config::try_from_env()
+        .map_err(|e| format!("Failed to load configuration from environment: {}", e))?;
 
-    let full_grpc_addr = format!("[::]:{}", grpc_port).parse()?;
+    // Try to load log configuration from the provided log file.
+    // Will default to stdout debug logging if the file can not be loaded.
+    load_logger_config_from_file(config.log_config.as_str())
+        .await
+        .or_else(|e| Ok::<(), String>(log::error!("(main) {}", e)))?;
 
-    let (mut health_reporter, health_service) = tonic_health::server::health_reporter();
-    let imp = DevopsTestImpl::default();
-    health_reporter
-        .set_serving::<DevopsTestRpcServer<DevopsTestImpl>>()
-        .await;
+    info!("(main) Server startup.");
+    // --------------------------------------------------
+    // START REST SECTION
+    // This section should be removed if there is no REST interface
+    // --------------------------------------------------
 
-    //start server
-    println!("Starting gRPC server at: {}", full_grpc_addr);
-    Server::builder()
-        .add_service(health_service)
-        .add_service(DevopsTestRpcServer::new(imp))
-        .serve(full_grpc_addr)
-        .await?;
-    println!("gRPC server running at: {}", full_grpc_addr);
+    // Allow option to only generate the spec file to a given location
+    // locally: cargo run -- --api ./out/$(PACKAGE_NAME)-openapi.json
+    // or `make rust-openapi` and `make rust-validate-openapi`
+    let args = Cli::parse();
+    if let Some(target) = args.openapi {
+        return generate_openapi_spec::<ApiDoc>(&target).map_err(|e| e.into());
+    }
+
+    tokio::spawn(rest_server(config.clone(), None));
+    // --------------------------------------------------
+    // END REST SECTION
+    // --------------------------------------------------
+
+    tokio::spawn(grpc_server(config, None)).await?;
+
+    info!("(main) Server shutdown.");
+
+    // Make sure all log message are written/ displayed before shutdown
+    log::logger().flush();
 
     Ok(())
 }
