@@ -10,7 +10,7 @@ build: clean docker-build
 clean: rust-clean
 release: rust-release
 publish: rust-publish
-test: rust-test-all cspell-test toml-test md-test-links editorconfig-test
+test: cspell-test toml-test md-test-links editorconfig-test rust-test-all
 tidy: rust-tidy toml-tidy editorconfig-tidy
 all: clean test build release publish
 
