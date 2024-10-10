@@ -11,7 +11,7 @@ services:
       service: server
     container_name: aetheric-${PACKAGE_NAME}-web-server
     build:
-      context: ${DOCKER_BUILD_PATH:-../.}
+      context: ${DOCKER_BUILD_PATH:-../../.}
       args:
         - PACKAGE_NAME=${PACKAGE_NAME}
         - ENABLE_FEATURES=${PACKAGE_RELEASE_FEATURES}
@@ -29,7 +29,7 @@ services:
       service: server
     container_name: aetheric-${PACKAGE_NAME}-web-server-stubbed
     build:
-      context: ${DOCKER_BUILD_PATH:-../.}
+      context: ${DOCKER_BUILD_PATH:-../../.}
       args:
         - PACKAGE_NAME=${PACKAGE_NAME}
         - ENABLE_FEATURES=${PACKAGE_RELEASE_FEATURES},stub_backends
