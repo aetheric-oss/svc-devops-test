@@ -140,4 +140,3 @@ Stop stack:
 
 Providing the `realm` profile is needed in order to stop all dependencies (eg. db) as well.
 If you don't provide the profile, only the svc-storage service will be terminated
-
