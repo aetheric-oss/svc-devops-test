@@ -18,6 +18,7 @@ services:
       - realm
     networks:
       - aetheric-realm
+      - integration-test
     restart: always
     ports:
       - 5672:5672
