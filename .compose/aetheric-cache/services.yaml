@@ -14,13 +14,14 @@ services:
   cache:
     container_name: aetheric-${COMPOSE_PROJECT_NAME}-cache
     image: valkey/valkey:8.0.0-alpine
+    profiles:
+      - realm
+      - integration-test
     environment:
       - VALKEY_DISABLE_COMMANDS=FLUSHDB,FLUSHALL,CONFIG
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
       - aetheric-realm
-    profiles:
-      - realm
     restart: always
     ports:
       - 6379:6379
