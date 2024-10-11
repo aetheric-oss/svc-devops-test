@@ -18,7 +18,7 @@ services:
       tags:
         - ${PACKAGE_NAME}:local
     depends_on:
-      svc-assets:
+      svc-svc-assets:
         condition: service_healthy
     profiles:
       - integration-test
