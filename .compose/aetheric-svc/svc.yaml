@@ -18,7 +18,7 @@ services:
     ports:
       - 8001:8000
     depends_on:
-      svc-svc-storage:
+      svc-storage:
         condition: service_healthy
 
   atc:
@@ -30,7 +30,7 @@ services:
     ports:
       - 8002:8000
     depends_on:
-      svc-svc-storage:
+      svc-storage:
         condition: service_healthy
 
   cargo:
@@ -42,13 +42,13 @@ services:
     ports:
       - 8003:8000
     depends_on:
-      svc-svc-storage:
+      svc-storage:
         condition: service_healthy
-      svc-svc-scheduler:
+      svc-scheduler:
         condition: service_healthy
-      svc-svc-pricing:
+      svc-pricing:
         condition: service_healthy
-      svc-svc-contact:
+      svc-contact:
         condition: service_healthy
 
   contact:
@@ -60,7 +60,7 @@ services:
     ports:
       - 8004:8000
     depends_on:
-      svc-svc-storage:
+      svc-storage:
         condition: service_healthy
 
   discovery:
@@ -72,9 +72,9 @@ services:
     ports:
       - 8005:8000
     depends_on:
-      svc-svc-gis:
+      svc-gis:
         condition: service_healthy
-      svc-svc-telemetry:
+      svc-telemetry:
         condition: service_healthy
 
   docs:
@@ -104,13 +104,13 @@ services:
     ports:
       - 8008:8000
     depends_on:
-      svc-svc-storage:
+      svc-storage:
         condition: service_healthy
-      svc-svc-gis:
+      svc-gis:
         condition: service_healthy
-      svc-cache:
+      cache:
         condition: service_healthy
-      svc-queue:
+      queue:
         condition: service_healthy
 
 
@@ -125,9 +125,9 @@ services:
       file: base.yaml
       service: server
     depends_on:
-      svc-svc-gis:
+      svc-gis:
         condition: service_healthy
-      svc-queue:
+      queue:
         condition: service_healthy
 
   devops-test:
@@ -147,9 +147,9 @@ services:
       file: base.yaml
       service: server
     depends_on:
-      svc-gis:
+      gis:
         condition: service_healthy
-      svc-cache:
+      cache:
         condition: service_healthy
 
   pricing:
@@ -166,9 +166,9 @@ services:
       file: base.yaml
       service: server
     depends_on:
-      svc-svc-storage:
+      svc-storage:
         condition: service_healthy
-      svc-svc-gis:
+      svc-gis:
         condition: service_healthy
 
   storage:
@@ -178,7 +178,7 @@ services:
       file: base.yaml
       service: server
     depends_on:
-      svc-db:
+      db:
         condition: service_healthy
 
 
