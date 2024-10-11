@@ -18,6 +18,7 @@ services:
     profiles:
       - realm-gis
       - realm
+      - integration-test
     volumes:
       - type: volume
         source: postgis-ssl
@@ -35,6 +36,7 @@ services:
     profiles:
       - realm-gis
       - realm
+      - integration-test
     environment:
       - SERVER_HOSTNAME=localhost
       - PGSSLROOTCERT=/var/lib/postgresql/certs/root.crt
@@ -67,11 +69,11 @@ services:
     profiles:
       - realm-gis
       - realm
+      - integration-test
     networks:
       - aetheric-realm
     user: "postgres:postgres"
     restart: always
-    #user: "postgres:1001"
     volumes:
       - type: volume
         source: postgis-data
