@@ -19,6 +19,7 @@ services:
     profiles:
       - realm-db
       - realm
+      - integration-test
     volumes:
       - type: volume
         source: db-data
@@ -39,6 +40,7 @@ services:
     profiles:
       - realm-db
       - realm
+      - integration-test
     ports:
       - 36257:36257
       - 8082:8080
