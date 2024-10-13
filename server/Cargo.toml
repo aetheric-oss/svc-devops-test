@@ -2,7 +2,7 @@
 description = "Aetheric template service gRPC server"
 keywords    = ["vtol", "server", "grpc", "rest", "devops-test"] # max 5
 name        = "svc-devops-test"
-version     = "0.1.4"
+version     = "0.1.5-develop.0"
 
 authors.workspace      = true
 categories.workspace   = true
